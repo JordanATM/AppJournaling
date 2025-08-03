@@ -41,9 +41,13 @@ export async function saveJournalEntry(
     return entry as JournalEntry;
   } else {
     // Creating a new entry
-    const { id, ...newEntryData } = entry;
-    const entryRef = await addDoc(entriesCol, newEntryData);
-    return { id: entryRef.id, ...newEntryData } as JournalEntry;
+    const newEntryData = {
+      ...entry,
+      createdAt: entry.createdAt || new Date().toISOString(),
+    };
+    const { id, ...dataToSave } = newEntryData;
+    const entryRef = await addDoc(entriesCol, dataToSave);
+    return { id: entryRef.id, ...dataToSave } as JournalEntry;
   }
 }
 

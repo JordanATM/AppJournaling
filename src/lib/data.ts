@@ -11,26 +11,31 @@ export const DUMMY_HABITS: Habit[] = [
 
 const today = new Date();
 const formatDate = (date: Date) => format(date, 'yyyy-MM-dd');
+const formatISO = (date: Date) => date.toISOString();
 
 export const DUMMY_ENTRIES: JournalEntry[] = [
   {
     id: 'e1',
     date: formatDate(today),
+    createdAt: formatISO(subDays(today, 0)),
     content: "Hoy fue un día tranquilo. Pasé un tiempo en el jardín, sintiendo el sol en mi cara. Son los pequeños momentos los que traen la mayor alegría. También logré terminar un capítulo de mi libro, lo que se sintió como un buen logro."
   },
   {
     id: 'e2',
     date: formatDate(subDays(today, 1)),
+    createdAt: formatISO(subDays(today, 1)),
     content: "Ayer me sentí un poco inquieto. El clima estaba sombrío, lo que podría haber contribuido. Probé una nueva receta para la cena y salió sorprendentemente bien. Cocinar me ayuda a centrarme cuando mis pensamientos están dispersos."
   },
   {
     id: 'e3',
     date: formatDate(subDays(today, 3)),
+    createdAt: formatISO(subDays(today, 3)),
     content: "Un día productivo en el trabajo. Tuve un avance en un proyecto que me ha estado molestando por un tiempo. Es un recordatorio de que la persistencia vale la pena. Por la noche, salí a dar un largo paseo para despejar mi mente."
   },
     {
     id: 'e4',
     date: formatDate(subDays(today, 5)),
+    createdAt: formatISO(subDays(today, 5)),
     content: "Tuve una charla maravillosa con un viejo amigo. Es increíble cómo algunas conexiones se sienten atemporales. Recordamos nuestros días de universidad y nos reímos hasta que nos dolieron los costados. Fue una dosis muy necesaria de nostalgia y calidez."
   },
 ];

@@ -4,6 +4,7 @@ export type JournalEntry = {
   id: string;
   date: string; // YYYY-MM-DD format
   content: string;
+  createdAt?: string; // ISO 8601 format
 };
 
 export type Habit = {

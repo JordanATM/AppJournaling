@@ -107,6 +107,7 @@ export default function Dashboard() {
     const newEntryData: Omit<JournalEntry, 'id'> = {
         date,
         content,
+        createdAt: new Date().toISOString(),
     };
     const savedEntry = await firestore.saveJournalEntry(user.uid, newEntryData);
     setEntries(prevEntries => [...prevEntries, savedEntry]);
@@ -174,14 +175,15 @@ export default function Dashboard() {
   };
 
   const filteredEntries = useMemo(() => {
-    return entries.filter(entry =>
-      entry.content.toLowerCase().includes(searchQuery.toLowerCase())
-    ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return entries
+      .filter(entry => entry.content.toLowerCase().includes(searchQuery.toLowerCase()))
+      .sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : new Date(a.date).getTime();
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : new Date(b.date).getTime();
+        return dateB - dateA;
+      });
   }, [entries, searchQuery]);
 
-  const entriesForSelectedDate = useMemo(() => {
-    return entries.filter(e => e.date === formattedSelectedDate);
-  }, [entries, formattedSelectedDate]);
 
   if (loading || !selectedDate) {
     return (
