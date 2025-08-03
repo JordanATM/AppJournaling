@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import * as lucideIcons from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -16,24 +15,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { Habit } from '@/lib/types';
-import IconPicker from './IconPicker';
+import HabitIcon from './HabitIcon';
 
 interface AddHabitDialogProps {
   children: React.ReactNode;
   onAddHabit: (habit: Omit<Habit, 'id'>) => void;
 }
-
-// Filter out non-icon exports from lucide-react
-const iconNames = Object.keys(lucideIcons).filter(
-  (key) => {
-    if (['createLucideIcon', 'icons', 'LucideIcon'].includes(key)) {
-        return false;
-    }
-    const value = lucideIcons[key as keyof typeof lucideIcons];
-    return typeof value === 'object' && value !== null && ('displayName' in value || typeof value.render === 'function');
-  }
-);
-
 
 export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogProps) {
   const [open, setOpen] = useState(false);
@@ -56,7 +43,7 @@ export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogP
         <DialogHeader>
           <DialogTitle>Add a New Habit</DialogTitle>
           <DialogDescription>
-            Create a new habit to track. Choose a name and an icon.
+            Create a new habit to track. Choose a name and an icon from lucide-react.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -76,12 +63,15 @@ export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogP
             <Label htmlFor="icon" className="text-right">
               Icon
             </Label>
-            <div className="col-span-3">
-              <IconPicker 
-                iconNames={iconNames}
-                selectedIcon={icon} 
-                onIconSelect={setIcon} 
+            <div className="col-span-3 flex items-center gap-2">
+               <Input
+                id="icon"
+                value={icon}
+                onChange={(e) => setIcon(e.target.value)}
+                className="flex-1"
+                placeholder="e.g., Smile"
               />
+              <HabitIcon iconName={icon} className="h-5 w-5" />
             </div>
           </div>
         </div>
@@ -91,7 +81,7 @@ export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogP
               Cancel
             </Button>
           </DialogClose>
-          <Button type="submit" onClick={handleAdd} disabled={!name}>
+          <Button type="submit" onClick={handleAdd} disabled={!name || !icon}>
             Add Habit
           </Button>
         </DialogFooter>
