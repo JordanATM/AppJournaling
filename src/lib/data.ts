@@ -2,7 +2,7 @@ import type { JournalEntry, Habit, HabitLog } from '@/lib/types';
 import { subDays, format } from 'date-fns';
 
 export const DUMMY_HABITS: Habit[] = [
-  { id: 'h1', name: 'Leer durante 15 minutos', icon: 'BookText' },
+  { id: 'h1', name: 'Leer durante 15 minutos', icon: 'Book' },
   { id: 'h2', name: 'Momento de atención plena', icon: 'Leaf' },
   { id: 'h3', name: 'Beber 8 vasos de agua', icon: 'Droplets' },
   { id: 'h4', name: 'Salir a caminar', icon: 'Footprints' },

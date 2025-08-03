@@ -37,7 +37,8 @@ export async function saveJournalEntry(
   if (entry.id) {
     // Editing an existing entry
     const entryRef = doc(entriesCol, entry.id);
-    await updateDoc(entryRef, entry);
+    const { id, ...dataToUpdate } = entry;
+    await updateDoc(entryRef, dataToUpdate);
     return entry as JournalEntry;
   } else {
     // Creating a new entry
@@ -64,16 +65,15 @@ export async function getHabits(userId: string): Promise<Habit[]> {
 }
 
 export async function addHabit(userId: string, habit: Omit<Habit, 'id'>): Promise<Habit> {
-  const habitsCol = getHabitsCollection(userId);
-  const habitRef = doc(habitsCol);
-  const newHabit = { ...habit, id: habitRef.id };
-  await setDoc(habitRef, newHabit);
-  return newHabit;
+    const habitsCol = getHabitsCollection(userId);
+    const docRef = await addDoc(habitsCol, habit);
+    return { id: docRef.id, ...habit };
 }
 
 export async function updateHabit(userId: string, habit: Habit): Promise<Habit> {
   const habitRef = doc(getHabitsCollection(userId), habit.id);
-  await setDoc(habitRef, habit, { merge: true });
+  const { id, ...dataToUpdate } = habit;
+  await setDoc(habitRef, dataToUpdate, { merge: true });
   return habit;
 }
 
