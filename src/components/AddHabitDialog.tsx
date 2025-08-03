@@ -24,12 +24,15 @@ interface AddHabitDialogProps {
 }
 
 const iconNames = Object.keys(lucideIcons).filter(
-  (key) =>
-    key !== 'createLucideIcon' &&
-    key !== 'icons' &&
-    key !== 'LucideIcon' &&
-    typeof lucideIcons[key as keyof typeof lucideIcons] !== 'string'
+  (key) => {
+    if (key === 'createLucideIcon' || key === 'icons' || key === 'LucideIcon') {
+      return false;
+    }
+    const value = lucideIcons[key as keyof typeof lucideIcons];
+    return typeof value === 'object' && value !== null && 'displayName' in value;
+  }
 );
+
 
 export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogProps) {
   const [open, setOpen] = useState(false);
