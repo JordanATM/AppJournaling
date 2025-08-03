@@ -9,7 +9,7 @@ export default function LofiPlayer() {
       <CardContent className="p-0 relative w-full h-full">
         <iframe
           className="w-full h-full"
-          src="https://www.youtube.com/embed/MYPVQccHhAQ?autoplay=1&mute=1&loop=1&playlist=MYPVQccHhAQ&controls=0&showinfo=0"
+          src="https://www.youtube.com/embed/MYPVQccHhAQ?loop=1&playlist=MYPVQccHhAQ&controls=0&showinfo=0"
           title="YouTube video player"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
