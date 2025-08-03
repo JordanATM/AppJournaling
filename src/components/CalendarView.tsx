@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -21,23 +22,41 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
       <style>{`
         .rdp {
           width: 100%;
-          height: 100%;
           --rdp-cell-size: 100%;
+          --rdp-caption-font-size: 1.125rem;
+          --rdp-caption-font-weight: 600;
+          --rdp-accent-color: hsl(var(--accent));
+          --rdp-background-color: transparent;
+          --rdp-foreground-color: hsl(var(--foreground));
+          --rdp-border: 1px solid hsl(var(--border));
+          --rdp-selected-color: hsl(var(--primary-foreground));
+          --rdp-selected-background-color: hsl(var(--primary));
+          --rdp-today-color: hsl(var(--primary));
+          --rdp-today-font-weight: bold;
         }
         .rdp-day_selected, .rdp-day_selected:focus-visible, .rdp-day_selected:hover {
-          background-color: hsl(var(--primary)) !important;
-          color: hsl(var(--primary-foreground)) !important;
+          background-color: var(--rdp-selected-background-color) !important;
+          color: var(--rdp-selected-color) !important;
+          font-weight: 500;
         }
         .rdp-day_today:not(.rdp-day_selected) {
-          color: hsl(var(--primary));
-          font-weight: bold;
+          color: var(--rdp-today-color);
+          font-weight: var(--rdp-today-font-weight);
+          background-color: hsl(var(--accent) / 0.2);
         }
         .day-with-entry {
-          font-weight: bold;
-          text-decoration: underline;
-          text-decoration-color: hsl(var(--accent));
-          text-decoration-thickness: 2px;
-          text-underline-offset: 2px;
+          position: relative;
+        }
+        .day-with-entry::after {
+          content: '';
+          position: absolute;
+          bottom: 4px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background-color: var(--rdp-accent-color);
         }
       `}</style>
       <DayPicker
@@ -53,16 +72,7 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
           today: 'rdp-day_today',
           'day-with-entry': 'day-with-entry',
         }}
-        className="p-3 size-full"
-        classNames={{
-          root: 'size-full',
-          months: 'size-full',
-          month: 'size-full flex flex-col',
-          table: 'size-full border-collapse',
-          caption_layout: 'flex justify-center items-center relative',
-          head_row: 'flex justify-around',
-          row: 'flex w-full justify-around mt-2',
-        }}
+        className="p-3"
         showOutsideDays
       />
     </div>
