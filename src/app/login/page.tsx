@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Wind } from 'lucide-react';
+import { Wind, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -24,7 +24,10 @@ export default function LoginPage() {
   const [displayName, setDisplayName] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { user, signup, login, loading: authLoading } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+
+  const { user, signup, login, loading: authLoading, resetPassword } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -33,6 +36,27 @@ export default function LoginPage() {
       router.push('/dashboard');
     }
   }, [user, authLoading, router]);
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await resetPassword(email);
+      toast({
+        title: "Correo de recuperación enviado",
+        description: "Revisa tu bandeja de entrada para restablecer tu contraseña.",
+      });
+      setIsForgotPassword(false);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "No se pudo enviar el correo de recuperación.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,6 +110,53 @@ export default function LoginPage() {
     return null;
   }
 
+  if (isForgotPassword) {
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-background font-body">
+            <Card className="w-full max-w-sm shadow-2xl">
+                <CardHeader className="text-center">
+                    <div className="flex justify-center items-center mb-4">
+                        <Wind className="h-10 w-10 text-primary" />
+                    </div>
+                    <CardTitle className="text-3xl font-headline">Recuperar Contraseña</CardTitle>
+                    <CardDescription>
+                        Ingresa tu correo para recibir un enlace de recuperación.
+                    </CardDescription>
+                </CardHeader>
+                <form onSubmit={handlePasswordReset}>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Correo Electrónico</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="tu@email.com"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                    </CardContent>
+                    <CardFooter className="flex flex-col gap-4">
+                        <Button type="submit" className="w-full" disabled={loading}>
+                            {loading ? 'Enviando...' : 'Enviar Correo'}
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="link"
+                            onClick={() => setIsForgotPassword(false)}
+                            className="text-sm"
+                            disabled={loading}
+                        >
+                            Volver a Iniciar Sesión
+                        </Button>
+                    </CardFooter>
+                </form>
+            </Card>
+        </div>
+    );
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-background font-body">
       <Card className="w-full max-w-sm shadow-2xl">
@@ -127,15 +198,38 @@ export default function LoginPage() {
                 />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="password">Contraseña</Label>
+              <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Contraseña</Label>
+                  {!isSignUp && (
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="p-0 h-auto text-xs"
+                      onClick={() => setIsForgotPassword(true)}
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </Button>
+                  )}
+              </div>
+              <div className="relative">
                 <Input
-                id="password"
-                type="password"
-                placeholder="********"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="********"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pr-10"
                 />
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground"
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
             </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
