@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useTransition } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Sparkles, LoaderCircle } from 'lucide-react';
@@ -8,51 +8,35 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { generateJournalPrompt } from '@/app/actions';
-import type { JournalEntry } from '@/lib/types';
 
 interface JournalEditorProps {
   selectedDate: Date;
   onSave: (content: string) => void;
+  onGetPrompt: () => void;
+  prompt: string | null;
+  isGeneratingPrompt: boolean;
 }
 
-export default function JournalEditor({ selectedDate, onSave }: JournalEditorProps) {
+export default function JournalEditor({
+  selectedDate,
+  onSave,
+  onGetPrompt,
+  prompt,
+  isGeneratingPrompt,
+}: JournalEditorProps) {
   const [content, setContent] = useState('');
-  const [prompt, setPrompt] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
-  
-  // This state is just to get previous entries for the prompt, not for rendering
-  const [previousEntriesForPrompt, setPreviousEntriesForPrompt] = useState<JournalEntry[]>([]);
-
 
   useEffect(() => {
-    // Clear content and prompt when selected date changes, but not the entries for prompt generation.
     setContent('');
-    setPrompt(null);
   }, [selectedDate]);
 
   const handleSave = () => {
     onSave(content);
     setContent('');
-    setPrompt(null);
     toast({
       title: "Entrada Guardada",
       description: `Tu nueva entrada para el ${format(selectedDate, 'd \'de\' MMMM \'de\' yyyy', { locale: es })} ha sido guardada.`,
-    });
-  };
-
-  const handleGetPrompt = () => {
-    startTransition(async () => {
-       // This part of the component is not ideal, as it's not receiving entries.
-       // For now, we will generate a generic prompt if no entries are available.
-       // A better implementation would involve lifting state up or using a global state manager.
-      const entriesText = previousEntriesForPrompt
-        .map(e => e.content)
-        .join('\n\n---\n\n');
-      
-      const generatedPrompt = await generateJournalPrompt({ previousEntries: entriesText });
-      setPrompt(generatedPrompt);
     });
   };
 
@@ -81,15 +65,15 @@ export default function JournalEditor({ selectedDate, onSave }: JournalEditorPro
         />
       </CardContent>
       <CardFooter className="flex justify-end space-x-2">
-        <Button variant="ghost" onClick={handleGetPrompt} disabled={isPending}>
-          {isPending ? (
+        <Button variant="ghost" onClick={onGetPrompt} disabled={isGeneratingPrompt}>
+          {isGeneratingPrompt ? (
             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Sparkles className="mr-2 h-4 w-4" />
           )}
           Obtener Sugerencia
         </Button>
-        <Button onClick={handleSave} disabled={isPending || !content.trim()}>Guardar Entrada</Button>
+        <Button onClick={handleSave} disabled={isGeneratingPrompt || !content.trim()}>Guardar Entrada</Button>
       </CardFooter>
     </Card>
   );

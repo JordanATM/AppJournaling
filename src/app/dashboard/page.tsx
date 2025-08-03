@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useTransition } from 'react';
 import { format, parseISO, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import type { JournalEntry, Habit, HabitLog } from '@/lib/types';
@@ -34,6 +34,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/use-auth';
 import * as firestore from '@/lib/firestore';
+import { generateJournalPrompt } from '@/app/actions';
+
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -52,6 +54,9 @@ export default function Dashboard() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [entryToEdit, setEntryToEdit] = useState<JournalEntry | null>(null);
   const [editedContent, setEditedContent] = useState('');
+  
+  const [prompt, setPrompt] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const fetchData = useCallback(async (userId: string) => {
     setLoading(true);
@@ -87,15 +92,16 @@ export default function Dashboard() {
   );
 
   const handleSaveNewEntry = async (content: string) => {
-    if (!user) return;
+    if (!user || !selectedDate) return;
     
     const newEntryData: Omit<JournalEntry, 'id'> = {
-        date: formattedSelectedDate,
+        date: format(selectedDate, 'yyyy-MM-dd'),
         content,
         createdAt: new Date().toISOString(),
     };
     const savedEntry = await firestore.saveJournalEntry(user.uid, newEntryData);
     setEntries(prevEntries => [...prevEntries, savedEntry]);
+    setPrompt(null);
   };
   
   const handleEditEntry = (entry: JournalEntry) => {
@@ -168,6 +174,23 @@ export default function Dashboard() {
         return dateB - dateA;
       });
   }, [entries, searchQuery]);
+  
+  const handleGetPrompt = () => {
+    startTransition(async () => {
+      const entriesText = entries
+        .map(e => e.content)
+        .join('\n\n---\n\n');
+      
+      const generatedPrompt = await generateJournalPrompt({ previousEntries: entriesText });
+      setPrompt(generatedPrompt);
+    });
+  };
+
+  useEffect(() => {
+    if (selectedDate) {
+      setPrompt(null);
+    }
+  }, [selectedDate]);
 
 
   if (loading || !selectedDate) {
@@ -227,6 +250,9 @@ export default function Dashboard() {
               <JournalEditor
                 selectedDate={selectedDate}
                 onSave={handleSaveNewEntry}
+                onGetPrompt={handleGetPrompt}
+                prompt={prompt}
+                isGeneratingPrompt={isPending}
               />
               <PastEntries 
                 entries={sortedEntries} 
