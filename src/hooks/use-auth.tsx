@@ -16,7 +16,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<any>;
-  signup: (email: string, password: string) => Promise<any>;
+  signup: (email: string, password: string, displayName: string) => Promise<any>;
   logout: () => Promise<void>;
   updateProfile: (updates: { displayName?: string; photoURL?: string }) => Promise<void>;
 }
@@ -39,8 +39,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  const signup = (email: string, password: string) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signup = async (email: string, password: string, displayName: string) => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await firebaseUpdateProfile(userCredential.user, { displayName });
+    // Manually update user state as onAuthStateChanged might not be fast enough
+    setUser({ ...userCredential.user, displayName });
+    return userCredential;
   };
 
   const logout = () => {

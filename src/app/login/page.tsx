@@ -21,6 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user, signup, login, loading: authLoading } = useAuth();
@@ -38,15 +39,22 @@ export default function LoginPage() {
     setLoading(true);
     try {
       if (isSignUp) {
-        await signup(email, password);
+        if (!displayName) {
+          toast({
+            variant: "destructive",
+            title: "Campo requerido",
+            description: "Por favor, ingresa un nombre de usuario.",
+          });
+          setLoading(false);
+          return;
+        }
+        await signup(email, password, displayName);
         toast({
             title: "¡Bienvenido!",
             description: "Tu cuenta ha sido creada exitosamente. Redirigiendo...",
         });
-        // No redirigir aquí, el useEffect se encargará
       } else {
         await login(email, password);
-        // No redirigir aquí, el useEffect se encargará
       }
     } catch (error: any) {
         toast({
@@ -74,7 +82,6 @@ export default function LoginPage() {
       );
   }
   
-  // No mostrar el formulario si el usuario ya está logueado y a punto de ser redirigido
   if (user) {
     return null;
   }
@@ -95,6 +102,19 @@ export default function LoginPage() {
         </CardHeader>
         <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
+            {isSignUp && (
+              <div className="space-y-2">
+                <Label htmlFor="displayName">Nombre de Usuario</Label>
+                <Input
+                  id="displayName"
+                  type="text"
+                  placeholder="Tu nombre"
+                  required
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                />
+              </div>
+            )}
             <div className="space-y-2">
                 <Label htmlFor="email">Correo Electrónico</Label>
                 <Input

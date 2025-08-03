@@ -81,12 +81,19 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-             <Avatar className="h-9 w-9">
-              <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? 'Usuario'} />
-              <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
-            </Avatar>
-          </Button>
+           <div className="flex items-center gap-2 cursor-pointer">
+              {user.displayName && (
+                <span className="text-sm font-medium text-foreground hidden sm:inline-block">
+                  {user.displayName}
+                </span>
+              )}
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? 'Usuario'} />
+                  <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                </Avatar>
+              </Button>
+           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
