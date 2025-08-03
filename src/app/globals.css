@@ -3,35 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 220 20% 96%; /* very light blue-gray */
-    --foreground: 220 15% 25%; /* dark desaturated blue */
-    --card: 220 20% 99%; /* almost white with a hint of blue */
-    --card-foreground: 220 15% 25%;
-    --popover: 220 20% 99%;
-    --popover-foreground: 220 15% 25%;
-    --primary: 210 30% 55%; /* muted, gentle slate blue */
-    --primary-foreground: 210 30% 98%; /* very light blue/white */
-    --secondary: 220 25% 88%; /* soft secondary blue-gray */
-    --secondary-foreground: 220 15% 25%;
-    --muted: 220 20% 90%;
-    --muted-foreground: 220 10% 45%;
-    --accent: 210 30% 75%; /* lighter accent blue */
-    --accent-foreground: 220 15% 25%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 220 20% 88%;
-    --input: 220 20% 88%;
-    --ring: 210 30% 55%;
-    --radius: 0.5rem;
-    --chart-1: 210 30% 55%;
-    --chart-2: 210 30% 75%;
-    --chart-3: 220 25% 78%;
-    --chart-4: 220 20% 80%;
-    --chart-5: 220 10% 65%;
-  }
- 
-  .dark {
+  :root, .theme-cozy-evening {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
@@ -56,6 +28,60 @@
     --chart-3: 60 50% 40%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+  }
+ 
+  .theme-serene-garden {
+    --background: 35 33% 96%; /* soft cream */
+    --foreground: 30 20% 25%; /* muted brown-black */
+    --card: 35 33% 99%; /* slightly lighter cream */
+    --card-foreground: 30 20% 25%;
+    --popover: 35 33% 99%;
+    --popover-foreground: 30 20% 25%;
+    --primary: 158 25% 55%; /* muted sage green */
+    --primary-foreground: 158 25% 98%; /* very light green/white */
+    --secondary: 158 20% 88%; /* soft secondary green-gray */
+    --secondary-foreground: 30 20% 25%;
+    --muted: 158 20% 92%;
+    --muted-foreground: 30 15% 45%;
+    --accent: 158 30% 75%; /* lighter accent green */
+    --accent-foreground: 30 20% 25%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 158 20% 88%;
+    --input: 158 20% 88%;
+    --ring: 158 25% 55%;
+    --chart-1: 158 25% 55%;
+    --chart-2: 158 30% 75%;
+    --chart-3: 35 33% 85%;
+    --chart-4: 30 20% 70%;
+    --chart-5: 30 15% 60%;
+  }
+
+  .theme-soft-night-sky {
+    --background: 220 20% 96%; /* very light blue-gray */
+    --foreground: 220 15% 25%; /* dark desaturated blue */
+    --card: 220 20% 99%; /* almost white with a hint of blue */
+    --card-foreground: 220 15% 25%;
+    --popover: 220 20% 99%;
+    --popover-foreground: 220 15% 25%;
+    --primary: 210 30% 55%; /* muted, gentle slate blue */
+    --primary-foreground: 210 30% 98%; /* very light blue/white */
+    --secondary: 220 25% 88%; /* soft secondary blue-gray */
+    --secondary-foreground: 220 15% 25%;
+    --muted: 220 20% 90%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 210 30% 75%; /* lighter accent blue */
+    --accent-foreground: 220 15% 25%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
+    --ring: 210 30% 55%;
+    --chart-1: 210 30% 55%;
+    --chart-2: 210 30% 75%;
+    --chart-3: 220 25% 78%;
+    --chart-4: 220 20% 80%;
+    --chart-5: 220 10% 65%;
   }
 }
  
