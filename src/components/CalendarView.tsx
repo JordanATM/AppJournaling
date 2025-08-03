@@ -7,18 +7,18 @@ import 'react-day-picker/dist/style.css';
 import type { JournalEntry } from '@/lib/types';
 import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { startOfDay } from 'date-fns';
 
 interface CalendarViewProps {
-  selectedDate: Date | null;
-  onDateSelect: (date: Date) => void;
+  today: Date;
+  onDateClick: (date: Date) => void;
   entries: JournalEntry[];
   className?: string;
 }
 
-export default function CalendarView({ selectedDate, onDateSelect, entries, className }: CalendarViewProps) {
+export default function CalendarView({ today, onDateClick, entries, className }: CalendarViewProps) {
   const entryDates = entries.map(e => {
-    const [year, month, day] = e.date.split('-').map(Number);
-    return new Date(year, month - 1, day);
+    return startOfDay(new Date(e.date));
   });
 
   return (
@@ -44,14 +44,13 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
           color: hsl(var(--foreground));
         }
         .rdp-day_selected, .rdp-day_selected:focus-visible, .rdp-day_selected:hover {
-          background-color: hsl(var(--primary)) !important;
-          color: hsl(var(--primary-foreground)) !important;
-          font-weight: 500;
-        }
-        .rdp-day_today:not(.rdp-day_selected) {
-          color: hsl(var(--primary));
+          background-color: transparent !important;
+          color: hsl(var(--primary)) !important;
           font-weight: bold;
-          background-color: hsl(var(--accent) / 0.2);
+          border: 1px solid hsl(var(--primary));
+        }
+        .rdp-day:not(.rdp-day_selected):not(.rdp-day_outside):hover {
+            background-color: hsl(var(--accent) / 0.1);
         }
         .day-with-entry:not(.rdp-day_selected) {
           position: relative;
@@ -71,14 +70,13 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
       <DayPicker
         locale={es}
         mode="single"
-        selected={selectedDate || undefined}
-        onSelect={(date) => date && onDateSelect(date)}
+        selected={today}
+        onDayClick={(date) => date && onDateClick(date)}
         modifiers={{
           'day-with-entry': entryDates,
         }}
         modifiersClassNames={{
           selected: 'rdp-day_selected',
-          today: 'rdp-day_today',
           'day-with-entry': 'day-with-entry',
         }}
         showOutsideDays

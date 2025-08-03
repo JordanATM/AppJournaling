@@ -17,7 +17,7 @@ interface HabitTrackerProps {
   habits: Habit[];
   habitLogs: HabitLog;
   selectedDate: string;
-  onToggleHabit: (habitId: string, date: string) => void;
+  onToggleHabit: (habitId: string) => void;
   onAddHabit: (habit: Omit<Habit, 'id'>) => void;
   onEditHabit: (habit: Habit) => void;
   onDeleteHabit: (habitId: string) => void;
@@ -89,7 +89,7 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
       <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">Seguimiento de Hábitos</CardTitle>
-          <CardDescription>Tu progreso diario</CardDescription>
+          <CardDescription>Tu progreso para hoy, {format(new Date(selectedDate), "d 'de' MMMM", {locale: es})}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div>
@@ -100,7 +100,7 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
                   <Checkbox
                     id={`habit-${habit.id}`}
                     checked={completedToday.has(habit.id)}
-                    onCheckedChange={() => onToggleHabit(habit.id, selectedDate)}
+                    onCheckedChange={() => onToggleHabit(habit.id)}
                     aria-label={`Marcar hábito ${habit.name} como completado`}
                   />
                   <label

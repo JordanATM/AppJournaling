@@ -47,7 +47,6 @@ export default function Dashboard() {
   const [habitLogs, setHabitLogs] = useState<HabitLog>({});
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
@@ -60,7 +59,11 @@ export default function Dashboard() {
   const [isPending, startTransition] = useTransition();
 
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  
+  const [isPastEntryDialogOpen, setIsPastEntryDialogOpen] = useState(false);
+  const [entriesForDialog, setEntriesForDialog] = useState<JournalEntry[]>([]);
 
+  const today = useMemo(() => startOfDay(new Date()), []);
 
   const fetchData = useCallback(async (userId: string) => {
     setLoading(true);
@@ -86,20 +89,16 @@ export default function Dashboard() {
     }
   }, [user, fetchData]);
 
-  useEffect(() => {
-    setSelectedDate(startOfDay(new Date()));
-  }, []);
-
-  const formattedSelectedDate = useMemo(
-    () => (selectedDate ? format(selectedDate, 'yyyy-MM-dd') : ''),
-    [selectedDate]
+  const formattedToday = useMemo(
+    () => format(today, 'yyyy-MM-dd'),
+    [today]
   );
 
   const handleSaveNewEntry = async (content: string) => {
-    if (!user || !selectedDate) return;
+    if (!user) return;
     
     const newEntryData: Omit<JournalEntry, 'id'> = {
-        date: format(selectedDate, 'yyyy-MM-dd'),
+        date: formattedToday,
         content,
         createdAt: new Date().toISOString(),
     };
@@ -142,10 +141,10 @@ export default function Dashboard() {
     setIsDeleteDialogOpen(false);
   };
 
-  const handleToggleHabit = async (habitId: string, date: string) => {
+  const handleToggleHabit = async (habitId: string) => {
     if (!user) return;
     
-    const updatedLogs = await firestore.toggleHabitLog(user.uid, habitId, date);
+    const updatedLogs = await firestore.toggleHabitLog(user.uid, habitId, formattedToday);
     setHabitLogs(updatedLogs);
   };
 
@@ -190,14 +189,16 @@ export default function Dashboard() {
     });
   };
 
-  useEffect(() => {
-    if (selectedDate) {
-      setPrompt(null);
+  const handleCalendarDateClick = (date: Date) => {
+    const dateString = format(date, 'yyyy-MM-dd');
+    const dayEntries = entries.filter(e => e.date === dateString);
+    if (dayEntries.length > 0) {
+      setEntriesForDialog(dayEntries);
+      setIsPastEntryDialogOpen(true);
     }
-  }, [selectedDate]);
+  };
 
-
-  if (loading || !selectedDate) {
+  if (loading) {
     return (
       <div className="flex flex-col h-screen bg-background text-foreground font-body">
         <Header onSearchChange={setSearchQuery} onEditProfile={() => {}}/>
@@ -240,8 +241,8 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
               <Card className="md:col-span-1 lg:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <CalendarView
-                    selectedDate={selectedDate}
-                    onDateSelect={d => setSelectedDate(startOfDay(d))}
+                    today={today}
+                    onDateClick={handleCalendarDateClick}
                     entries={entries}
                 />
               </Card>
@@ -252,7 +253,7 @@ export default function Dashboard() {
           
             <div className="lg:col-span-2 space-y-8">
               <JournalEditor
-                selectedDate={selectedDate}
+                selectedDate={today}
                 onSave={handleSaveNewEntry}
                 onGetPrompt={handleGetPrompt}
                 prompt={prompt}
@@ -269,7 +270,7 @@ export default function Dashboard() {
               <HabitTracker
                 habits={habits}
                 habitLogs={habitLogs}
-                selectedDate={formattedSelectedDate}
+                selectedDate={formattedToday}
                 onToggleHabit={handleToggleHabit}
                 onAddHabit={handleAddHabit}
                 onEditHabit={handleEditHabit}
@@ -315,6 +316,29 @@ export default function Dashboard() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancelar</Button>
             <Button onClick={handleSaveEditedEntry}>Guardar Cambios</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={isPastEntryDialogOpen} onOpenChange={setIsPastEntryDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              Reflexiones del {entriesForDialog.length > 0 ? format(parseISO(entriesForDialog[0].date + 'T00:00:00'), 'd \'de\' MMMM', { locale: es }) : ''}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4 max-h-[60vh] overflow-y-auto">
+            {entriesForDialog.map(entry => (
+              <div key={entry.id} className="p-4 border-b">
+                 <p className="text-sm text-muted-foreground mb-2">
+                    {format(parseISO(entry.createdAt!), 'HH:mm', { locale: es })}
+                  </p>
+                  <p className="whitespace-pre-wrap">{entry.content}</p>
+              </div>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setIsPastEntryDialogOpen(false)}>Cerrar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
