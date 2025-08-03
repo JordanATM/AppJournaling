@@ -32,6 +32,8 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
 
   const handleSave = () => {
     onSave(content);
+    setContent(''); // Limpiar el contenido después de guardar
+    setPrompt(null); // Limpiar el prompt después de guardar
     toast({
       title: "Entrada Guardada",
       description: `Tu entrada del diario para el ${format(selectedDate, 'd \'de\' MMMM \'de\' yyyy', { locale: es })} ha sido guardada.`,

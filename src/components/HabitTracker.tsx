@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import type { Habit, HabitLog } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartConfig, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { addDays, format, startOfWeek, getWeek } from 'date-fns';
+import { addDays, subDays, format, startOfWeek, getWeek } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Plus, Trash2, Pencil } from 'lucide-react';
+import { Plus, Trash2, Pencil, ChevronLeft, ChevronRight } from 'lucide-react';
 import HabitIcon from './HabitIcon';
 import AddHabitDialog from './AddHabitDialog';
 
@@ -26,12 +26,16 @@ interface HabitTrackerProps {
 export default function HabitTracker({ habits, habitLogs, selectedDate, onToggleHabit, onAddHabit, onEditHabit, onDeleteHabit }: HabitTrackerProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
+  const [displayDate, setDisplayDate] = useState(new Date(selectedDate));
+
+  useEffect(() => {
+    setDisplayDate(new Date(selectedDate));
+  }, [selectedDate]);
 
   const { chartData, weekNumber } = useMemo(() => {
     const data = [];
-    const today = selectedDate ? new Date(selectedDate) : new Date();
-    const weekNumber = getWeek(today, { locale: es });
-    const start = startOfWeek(today, { weekStartsOn: 1, locale: es });
+    const weekNumber = getWeek(displayDate, { locale: es });
+    const start = startOfWeek(displayDate, { weekStartsOn: 1, locale: es });
     for (let i = 0; i < 7; i++) {
       const date = addDays(start, i);
       const dateString = format(date, 'yyyy-MM-dd');
@@ -42,7 +46,7 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
       });
     }
     return { chartData: data, weekNumber };
-  }, [habitLogs, selectedDate]);
+  }, [habitLogs, displayDate]);
 
   const chartConfig = {
     completed: {
@@ -69,6 +73,14 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
     } else {
       onAddHabit(habit);
     }
+  };
+
+  const handlePrevWeek = () => {
+    setDisplayDate(subDays(displayDate, 7));
+  };
+
+  const handleNextWeek = () => {
+    setDisplayDate(addDays(displayDate, 7));
   };
 
 
@@ -127,7 +139,19 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
             </Button>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-2">Racha Semanal - Semana {weekNumber}</h3>
+            <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-semibold">Racha Semanal - Semana {weekNumber}</h3>
+                <div className="flex items-center gap-2">
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={handlePrevWeek}>
+                        <ChevronLeft className="h-4 w-4" />
+                        <span className="sr-only">Semana anterior</span>
+                    </Button>
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={handleNextWeek}>
+                        <ChevronRight className="h-4 w-4" />
+                        <span className="sr-only">Semana siguiente</span>
+                    </Button>
+                </div>
+            </div>
             <ChartContainer config={chartConfig} className="h-[150px] w-full">
               <BarChart accessibilityLayer data={chartData} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid vertical={false} />
