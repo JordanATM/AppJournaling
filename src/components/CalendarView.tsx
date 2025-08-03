@@ -18,7 +18,7 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
   const entryDates = entries.map(e => new Date(e.date));
 
   return (
-    <div className={className}>
+    <div className={cn("flex justify-center items-center h-full", className)}>
       <style>{`
         .rdp {
           --rdp-cell-size: 2.5rem;
