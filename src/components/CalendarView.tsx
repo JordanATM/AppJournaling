@@ -19,6 +19,11 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
   return (
     <div className={className}>
       <style>{`
+        .rdp {
+          width: 100%;
+          height: 100%;
+          --rdp-cell-size: 100%;
+        }
         .rdp-day_selected, .rdp-day_selected:focus-visible, .rdp-day_selected:hover {
           background-color: hsl(var(--primary)) !important;
           color: hsl(var(--primary-foreground)) !important;
@@ -48,14 +53,17 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
           today: 'rdp-day_today',
           'day-with-entry': 'day-with-entry',
         }}
-        className="p-0"
+        className="p-3 size-full"
         classNames={{
-          root: 'w-full',
-          month: 'w-full',
-          table: 'w-full',
+          root: 'size-full',
+          months: 'size-full',
+          month: 'size-full flex flex-col',
+          table: 'size-full border-collapse',
+          caption_layout: 'flex justify-center items-center relative',
           head_row: 'flex justify-around',
           row: 'flex w-full justify-around mt-2',
         }}
+        showOutsideDays
       />
     </div>
   );
