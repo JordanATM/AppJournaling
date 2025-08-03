@@ -1,12 +1,11 @@
-export type ThemeName = 'cozy-evening' | 'serene-garden' | 'soft-night-sky';
+export type ThemeName = 'cozy-evening' | 'serene-garden' | 'soft-night-sky' | 'desert-warmth' | 'midnight-forest';
 
 export type Theme = {
   name: ThemeName;
   label: string;
   colors: {
     primary: string;
-    background: string;
-    accent: string;
+    primaryForeground: string;
   };
 };
 
@@ -16,8 +15,7 @@ export const themes: Theme[] = [
     label: 'Noche Acogedora',
     colors: {
       primary: 'hsl(185 23% 55%)',
-      background: 'hsl(240 10% 3.9%)',
-      accent: 'hsl(127 15% 20%)',
+      primaryForeground: 'hsl(185 25% 15%)',
     },
   },
   {
@@ -25,8 +23,7 @@ export const themes: Theme[] = [
     label: 'Jardín Sereno',
     colors: {
       primary: 'hsl(158 25% 55%)',
-      background: 'hsl(35 33% 96%)',
-      accent: 'hsl(158 30% 75%)',
+      primaryForeground: 'hsl(158 25% 98%)',
     },
   },
   {
@@ -34,8 +31,23 @@ export const themes: Theme[] = [
     label: 'Cielo Nocturno',
     colors: {
       primary: 'hsl(210 30% 55%)',
-      background: 'hsl(220 20% 96%)',
-      accent: 'hsl(210 30% 75%)',
+      primaryForeground: 'hsl(210 30% 98%)',
     },
   },
+  {
+    name: 'desert-warmth',
+    label: 'Calidez Desierto',
+    colors: {
+        primary: 'hsl(25 80% 60%)',
+        primaryForeground: 'hsl(25 80% 98%)',
+    }
+  },
+  {
+    name: 'midnight-forest',
+    label: 'Bosque Medianoche',
+    colors: {
+        primary: 'hsl(170 40% 50%)',
+        primaryForeground: 'hsl(170 40% 98%)',
+    }
+  }
 ];

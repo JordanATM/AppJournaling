@@ -30,20 +30,15 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<ThemeName>(defaultTheme);
 
   useEffect(() => {
-    try {
-      const storedTheme = localStorage.getItem(storageKey) as ThemeName | null;
-      if (storedTheme) {
-        setTheme(storedTheme);
-      }
-    } catch (e) {
-      // localStorage is not available
-      console.error('Error reading theme from localStorage', e);
+    const storedTheme = localStorage.getItem(storageKey) as ThemeName | null;
+    if (storedTheme) {
+      setTheme(storedTheme);
     }
   }, [storageKey]);
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('theme-cozy-evening', 'theme-serene-garden', 'theme-soft-night-sky');
+    root.classList.remove('theme-cozy-evening', 'theme-serene-garden', 'theme-soft-night-sky', 'theme-desert-warmth', 'theme-midnight-forest');
     
     if (theme) {
       root.classList.add(`theme-${theme}`);
@@ -53,11 +48,7 @@ export function ThemeProvider({
   const value = useMemo(() => ({
     theme,
     setTheme: (newTheme: ThemeName) => {
-      try {
-        localStorage.setItem(storageKey, newTheme);
-      } catch(e) {
-         console.error('Error saving theme to localStorage', e);
-      }
+      localStorage.setItem(storageKey, newTheme);
       setTheme(newTheme);
     },
   }), [theme, storageKey]);

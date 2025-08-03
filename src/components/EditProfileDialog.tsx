@@ -35,8 +35,11 @@ export default function EditProfileDialog({ open, onOpenChange }: EditProfileDia
   const [selectedTheme, setSelectedTheme] = useState<ThemeName>(currentTheme);
   
   useEffect(() => {
-    setSelectedTheme(currentTheme);
-  }, [currentTheme, open]);
+    if (open) {
+      setDisplayName(user?.displayName ?? '');
+      setSelectedTheme(currentTheme);
+    }
+  }, [open, user, currentTheme]);
 
   const handleNameChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,13 +67,7 @@ export default function EditProfileDialog({ open, onOpenChange }: EditProfileDia
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-      if (!isOpen) {
-        setDisplayName(user?.displayName ?? '');
-        setSelectedTheme(currentTheme);
-      }
-      onOpenChange(isOpen);
-    }}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Editar Perfil</DialogTitle>
@@ -106,14 +103,14 @@ export default function EditProfileDialog({ open, onOpenChange }: EditProfileDia
                       onClick={() => setSelectedTheme(theme.name)}
                       className={cn(
                         'flex flex-col items-center justify-center rounded-md border-2 p-2 transition-all',
-                        selectedTheme === theme.name ? 'border-primary' : 'border-transparent'
+                        selectedTheme === theme.name ? 'border-primary' : 'border-transparent hover:border-border'
                       )}
                     >
                       <div
                         className="h-10 w-10 rounded-full flex items-center justify-center border"
-                        style={{ backgroundColor: theme.colors.primary }}
+                        style={{ backgroundColor: theme.colors.primary, color: theme.colors.primaryForeground }}
                       >
-                       {selectedTheme === theme.name && <Check className="h-6 w-6 text-primary-foreground" />}
+                       {selectedTheme === theme.name && <Check className="h-6 w-6" />}
                       </div>
                       <span className="mt-2 text-xs font-medium text-foreground">{theme.label}</span>
                     </button>
