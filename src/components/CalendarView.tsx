@@ -21,33 +21,38 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
     <div className={className}>
       <style>{`
         .rdp {
-          width: 100%;
-          --rdp-cell-size: 100%;
-          --rdp-caption-font-size: 1.125rem;
-          --rdp-caption-font-weight: 600;
-          --rdp-accent-color: hsl(var(--accent));
-          --rdp-background-color: transparent;
-          --rdp-foreground-color: hsl(var(--foreground));
-          --rdp-border: 1px solid hsl(var(--border));
-          --rdp-selected-color: hsl(var(--primary-foreground));
-          --rdp-selected-background-color: hsl(var(--primary));
-          --rdp-today-color: hsl(var(--primary));
-          --rdp-today-font-weight: bold;
+          --rdp-cell-size: 2.5rem;
+          margin: 1rem 0;
+        }
+        .rdp-caption_label {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: hsl(var(--foreground));
+        }
+        .rdp-nav_button {
+          color: hsl(var(--foreground));
+        }
+        .rdp-head_cell {
+          color: hsl(var(--muted-foreground));
+          font-weight: 500;
+        }
+        .rdp-day {
+          color: hsl(var(--foreground));
         }
         .rdp-day_selected, .rdp-day_selected:focus-visible, .rdp-day_selected:hover {
-          background-color: var(--rdp-selected-background-color) !important;
-          color: var(--rdp-selected-color) !important;
+          background-color: hsl(var(--primary)) !important;
+          color: hsl(var(--primary-foreground)) !important;
           font-weight: 500;
         }
         .rdp-day_today:not(.rdp-day_selected) {
-          color: var(--rdp-today-color);
-          font-weight: var(--rdp-today-font-weight);
+          color: hsl(var(--primary));
+          font-weight: bold;
           background-color: hsl(var(--accent) / 0.2);
         }
-        .day-with-entry {
+        .day-with-entry:not(.rdp-day_selected) {
           position: relative;
         }
-        .day-with-entry::after {
+        .day-with-entry:not(.rdp-day_selected)::after {
           content: '';
           position: absolute;
           bottom: 4px;
@@ -56,7 +61,7 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
           width: 5px;
           height: 5px;
           border-radius: 50%;
-          background-color: var(--rdp-accent-color);
+          background-color: hsl(var(--accent));
         }
       `}</style>
       <DayPicker
@@ -72,7 +77,6 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
           today: 'rdp-day_today',
           'day-with-entry': 'day-with-entry',
         }}
-        className="p-3"
         showOutsideDays
       />
     </div>
