@@ -4,19 +4,24 @@ import React, { useMemo } from 'react';
 import type { Habit, HabitLog } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartConfig, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { subDays, format } from 'date-fns';
+import { Plus, Trash2 } from 'lucide-react';
 import HabitIcon from './HabitIcon';
+import AddHabitDialog from './AddHabitDialog';
 
 interface HabitTrackerProps {
   habits: Habit[];
   habitLogs: HabitLog;
   selectedDate: string;
   onToggleHabit: (habitId: string, date: string) => void;
+  onAddHabit: (habit: Omit<Habit, 'id'>) => void;
+  onDeleteHabit: (habitId: string) => void;
 }
 
-export default function HabitTracker({ habits, habitLogs, selectedDate, onToggleHabit }: HabitTrackerProps) {
+export default function HabitTracker({ habits, habitLogs, selectedDate, onToggleHabit, onAddHabit, onDeleteHabit }: HabitTrackerProps) {
 
   const chartData = useMemo(() => {
     const data = [];
@@ -52,7 +57,7 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
           <h3 className="text-lg font-semibold mb-2">Today's Habits</h3>
           <div className="space-y-3">
             {habits.map(habit => (
-              <div key={habit.id} className="flex items-center space-x-3 p-2 rounded-md transition-colors hover:bg-accent/50">
+              <div key={habit.id} className="flex items-center space-x-3 p-2 rounded-md transition-colors group hover:bg-accent/50">
                 <Checkbox
                   id={`habit-${habit.id}`}
                   checked={completedToday.has(habit.id)}
@@ -66,9 +71,24 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
                   {habit.name}
                 </label>
                 <HabitIcon iconName={habit.icon} className="h-5 w-5 text-primary" />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => onDeleteHabit(habit.id)}
+                    aria-label={`Delete habit ${habit.name}`}
+                  >
+                    <Trash2 className="h-4 w-4 text-muted-foreground" />
+                  </Button>
               </div>
             ))}
           </div>
+          <AddHabitDialog onAddHabit={onAddHabit}>
+            <Button variant="ghost" className="mt-2 w-full">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Habit
+            </Button>
+          </AddHabitDialog>
         </div>
         <div>
            <h3 className="text-lg font-semibold mb-2">Weekly Streak</h3>
@@ -87,7 +107,7 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
                 axisLine={false}
                 tickMargin={8}
                 allowDecimals={false}
-                domain={[0, habits.length]}
+                domain={[0, Math.max(1, habits.length)]}
               />
               <Tooltip cursor={false} content={<ChartTooltipContent />} />
               <Bar dataKey="completed" fill="var(--color-completed)" radius={4} />

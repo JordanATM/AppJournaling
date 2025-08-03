@@ -17,7 +17,7 @@ interface DashboardProps {
 
 export default function Dashboard({ initialEntries, initialHabits, initialLogs }: DashboardProps) {
   const [entries, setEntries] = useState<JournalEntry[]>(initialEntries);
-  const [habits] = useState<Habit[]>(initialHabits);
+  const [habits, setHabits] = useState<Habit[]>(initialHabits);
   const [habitLogs, setHabitLogs] = useState<HabitLog>(initialLogs);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date>(startOfDay(new Date()));
@@ -64,6 +64,28 @@ export default function Dashboard({ initialEntries, initialHabits, initialLogs }
     });
   };
 
+  const handleAddHabit = (newHabit: Omit<Habit, 'id'>) => {
+    setHabits(prevHabits => {
+      const habit: Habit = {
+        ...newHabit,
+        id: `h${prevHabits.length + 1}`,
+      };
+      return [...prevHabits, habit];
+    });
+  }
+
+  const handleDeleteHabit = (habitId: string) => {
+    setHabits(prevHabits => prevHabits.filter(h => h.id !== habitId));
+    // Also remove from logs
+    setHabitLogs(prevLogs => {
+      const newLogs = { ...prevLogs };
+      for (const date in newLogs) {
+        newLogs[date].completedHabits.delete(habitId);
+      }
+      return newLogs;
+    });
+  };
+
   const filteredEntries = useMemo(() => {
     return entries.filter(entry =>
       entry.content.toLowerCase().includes(searchQuery.toLowerCase())
@@ -97,6 +119,8 @@ export default function Dashboard({ initialEntries, initialHabits, initialLogs }
               habitLogs={habitLogs}
               selectedDate={formattedSelectedDate}
               onToggleHabit={handleToggleHabit}
+              onAddHabit={handleAddHabit}
+              onDeleteHabit={handleDeleteHabit}
             />
           </div>
         </div>
