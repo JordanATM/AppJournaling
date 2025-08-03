@@ -225,7 +225,7 @@ export default function Dashboard() {
           <div className="space-y-8 max-w-screen-2xl mx-auto">
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-              <Card className="md:col-span-1 lg:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-center">
+              <Card className="md:col-span-1 lg:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <CalendarView
                     selectedDate={selectedDate}
                     onDateSelect={d => setSelectedDate(startOfDay(d))}
@@ -237,30 +237,28 @@ export default function Dashboard() {
               </div>
             </div>
           
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 space-y-8">
-                <JournalEditor
-                  selectedDate={selectedDate}
-                  onSave={handleSaveNewEntry}
-                />
-                <PastEntries 
-                  entries={sortedEntries} 
-                  onEdit={handleEditEntry} 
-                  onDelete={handleDeleteEntry}
-                />
-              </div>
+            <div className="lg:col-span-2 space-y-8">
+              <JournalEditor
+                selectedDate={selectedDate}
+                onSave={handleSaveNewEntry}
+              />
+              <PastEntries 
+                entries={sortedEntries} 
+                onEdit={handleEditEntry} 
+                onDelete={handleDeleteEntry}
+              />
+            </div>
 
-              <div className="lg:col-span-1 space-y-8">
-                <HabitTracker
-                  habits={habits}
-                  habitLogs={habitLogs}
-                  selectedDate={formattedSelectedDate}
-                  onToggleHabit={handleToggleHabit}
-                  onAddHabit={handleAddHabit}
-                  onEditHabit={handleEditHabit}
-                  onDeleteHabit={handleDeleteHabit}
-                />
-              </div>
+            <div className="mt-8">
+              <HabitTracker
+                habits={habits}
+                habitLogs={habitLogs}
+                selectedDate={formattedSelectedDate}
+                onToggleHabit={handleToggleHabit}
+                onAddHabit={handleAddHabit}
+                onEditHabit={handleEditHabit}
+                onDeleteHabit={handleDeleteHabit}
+              />
             </div>
 
           </div>
@@ -306,4 +304,3 @@ export default function Dashboard() {
       </Dialog>
     </>
   );
-}
