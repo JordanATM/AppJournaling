@@ -41,7 +41,7 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
       const dateString = format(date, 'yyyy-MM-dd');
       const dayLog = habitLogs[dateString];
       data.push({
-        date: format(date, 'EEE', { locale: es }),
+        date: format(date, 'EEE d', { locale: es }),
         completed: dayLog ? dayLog.completedHabits.size : 0,
       });
     }
