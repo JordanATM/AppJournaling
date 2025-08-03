@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { LogOut, User, Image as ImageIcon } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 
 interface UserMenuProps {
   onLogout: () => void;
@@ -60,10 +60,6 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem disabled>
-            <ImageIcon className="mr-2 h-4 w-4" />
-            <span>Cambiar Foto</span>
-          </DropdownMenuItem>
           <DropdownMenuItem disabled>
             <User className="mr-2 h-4 w-4" />
             <span>Editar Perfil</span>
