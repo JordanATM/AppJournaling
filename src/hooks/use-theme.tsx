@@ -1,71 +1,69 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
-import type { ThemeName } from '@/lib/themes';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { themes, type Theme } from '@/lib/themes';
 
 interface ThemeProviderProps {
   children: React.ReactNode;
-  defaultTheme?: ThemeName;
-  storageKey?: string;
 }
 
-interface ThemeProviderState {
-  theme: ThemeName;
-  setTheme: (theme: ThemeName) => void;
+interface ThemeContextType {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  themes: Theme[];
 }
 
-const initialState: ThemeProviderState = {
-  theme: 'cozy-evening',
-  setTheme: () => null,
-};
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
+const defaultTheme = themes[0];
 
-export function ThemeProvider({
-  children,
-  defaultTheme = 'cozy-evening',
-  storageKey = 'vite-ui-theme',
-  ...props
-}: ThemeProviderProps) {
-  const [theme, setTheme] = useState<ThemeName>(defaultTheme);
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+  const [theme, setThemeState] = useState<Theme>(defaultTheme);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem(storageKey) as ThemeName | null;
-    if (storedTheme) {
-      setTheme(storedTheme);
+    setIsMounted(true);
+    const savedThemeName = localStorage.getItem('app-theme');
+    const savedTheme = themes.find(t => t.name === savedThemeName);
+    if (savedTheme) {
+      setThemeState(savedTheme);
     }
-  }, [storageKey]);
+  }, []);
+
+  const setTheme = useCallback((newTheme: Theme) => {
+    setThemeState(newTheme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('app-theme', newTheme.name);
+    }
+  }, []);
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove('theme-cozy-evening', 'theme-serene-garden', 'theme-soft-night-sky', 'theme-desert-warmth', 'theme-midnight-forest');
-    
-    if (theme) {
-      root.classList.add(`theme-${theme}`);
+    if (isMounted) {
+      document.body.className = theme.className;
     }
-  }, [theme]);
+  }, [theme, isMounted]);
 
-  const value = useMemo(() => ({
+  const value = {
     theme,
-    setTheme: (newTheme: ThemeName) => {
-      localStorage.setItem(storageKey, newTheme);
-      setTheme(newTheme);
-    },
-  }), [theme, storageKey]);
+    setTheme,
+    themes,
+  };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeContext.Provider value={value}>
       {children}
-    </ThemeProviderContext.Provider>
+    </ThemeContext.Provider>
   );
-}
+};
 
 export const useTheme = () => {
-  const context = useContext(ThemeProviderContext);
-
+  const context = useContext(ThemeContext);
   if (context === undefined) {
     throw new Error('useTheme debe ser usado dentro de un ThemeProvider');
   }
-
   return context;
 };

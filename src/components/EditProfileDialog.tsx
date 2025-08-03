@@ -14,11 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
-import { LoaderCircle, Check } from 'lucide-react';
-import { useTheme } from '@/hooks/use-theme';
-import { themes } from '@/lib/themes';
-import type { ThemeName } from '@/lib/themes';
-import { cn } from '@/lib/utils';
+import { LoaderCircle } from 'lucide-react';
 
 interface EditProfileDialogProps {
   open: boolean;
@@ -28,18 +24,15 @@ interface EditProfileDialogProps {
 export default function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps) {
   const { user, updateProfile } = useAuth();
   const { toast } = useToast();
-  const { theme: currentTheme, setTheme: applyTheme } = useTheme();
 
-  const [displayName, setDisplayName] = useState(user?.displayName ?? '');
+  const [displayName, setDisplayName] = useState('');
   const [nameLoading, setNameLoading] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState<ThemeName>(currentTheme);
   
   useEffect(() => {
     if (open) {
       setDisplayName(user?.displayName ?? '');
-      setSelectedTheme(currentTheme);
     }
-  }, [open, user, currentTheme]);
+  }, [open, user]);
 
   const handleNameChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,14 +49,6 @@ export default function EditProfileDialog({ open, onOpenChange }: EditProfileDia
     } finally {
       setNameLoading(false);
     }
-  };
-  
-  const handleThemeSave = () => {
-    applyTheme(selectedTheme);
-    toast({
-      title: 'Tema Guardado',
-      description: 'Tu nueva paleta de colores ha sido aplicada.',
-    });
   };
 
   return (
@@ -93,34 +78,6 @@ export default function EditProfileDialog({ open, onOpenChange }: EditProfileDia
                 </div>
               </div>
             </form>
-
-            <div className="space-y-3">
-              <Label>Tema de Color</Label>
-              <div className="grid grid-cols-3 gap-4">
-                {themes.map((theme) => (
-                  <div key={theme.name}>
-                    <button
-                      onClick={() => setSelectedTheme(theme.name)}
-                      className={cn(
-                        'flex flex-col items-center justify-center rounded-md border-2 p-2 transition-all',
-                        selectedTheme === theme.name ? 'border-primary' : 'border-transparent hover:border-border'
-                      )}
-                    >
-                      <div
-                        className="h-10 w-10 rounded-full flex items-center justify-center border"
-                        style={{ backgroundColor: theme.colors.primary, color: theme.colors.primaryForeground }}
-                      >
-                       {selectedTheme === theme.name && <Check className="h-6 w-6" />}
-                      </div>
-                      <span className="mt-2 text-xs font-medium text-foreground">{theme.label}</span>
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <Button onClick={handleThemeSave} disabled={selectedTheme === currentTheme} className="w-full">
-                Guardar Tema
-              </Button>
-            </div>
         </div>
         
         <DialogFooter>
