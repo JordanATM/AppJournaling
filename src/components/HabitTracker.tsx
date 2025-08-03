@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartConfig, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { addDays, format, startOfWeek } from 'date-fns';
+import { addDays, format, startOfWeek, getWeek } from 'date-fns';
 import { Plus, Trash2, Pencil } from 'lucide-react';
 import HabitIcon from './HabitIcon';
 import AddHabitDialog from './AddHabitDialog';
@@ -26,21 +26,22 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
 
-  const chartData = useMemo(() => {
+  const { chartData, weekNumber } = useMemo(() => {
     const data = [];
     const today = selectedDate ? new Date(selectedDate) : new Date();
-    // Use startOfWeek to get the beginning of the week (Sunday by default)
-    const start = startOfWeek(today); 
+    const weekNumber = getWeek(today);
+    // Use startOfWeek to get the beginning of the week (Sunday by default, { weekStartsOn: 1 } for Monday)
+    const start = startOfWeek(today, { weekStartsOn: 1 }); 
     for (let i = 0; i < 7; i++) {
       const date = addDays(start, i);
       const dateString = format(date, 'yyyy-MM-dd');
       const dayLog = habitLogs[dateString];
       data.push({
-        date: format(date, 'MMM d'),
+        date: format(date, 'EEE'), // Format to 'Mon', 'Tue', etc.
         completed: dayLog ? dayLog.completedHabits.size : 0,
       });
     }
-    return data;
+    return { chartData: data, weekNumber };
   }, [habitLogs, selectedDate]);
 
   const chartConfig = {
@@ -126,7 +127,7 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
             </Button>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-2">Weekly Streak</h3>
+            <h3 className="text-lg font-semibold mb-2">Weekly Streak - Week {weekNumber}</h3>
             <ChartContainer config={chartConfig} className="h-[150px] w-full">
               <BarChart accessibilityLayer data={chartData} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid vertical={false} />
@@ -135,7 +136,6 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
-                  tickFormatter={(value) => value.slice(0, 3)}
                 />
                 <YAxis
                   tickLine={false}
