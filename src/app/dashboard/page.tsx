@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import JournalEditor from '@/components/JournalEditor';
 import PastEntries from '@/components/PastEntries';
 import HabitTracker from '@/components/HabitTracker';
+import CalendarView from '@/components/CalendarView';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -222,19 +223,25 @@ export default function Dashboard() {
             <div className="lg:col-span-2 xl:col-span-3 space-y-8">
               <JournalEditor
                 selectedDate={selectedDate}
-                entries={entries}
                 onSave={(content) => handleSaveNewEntry(content, formattedSelectedDate)}
               />
               <PastEntries 
                 entries={filteredEntries} 
                 onEdit={handleEditEntry} 
                 onDelete={handleDeleteEntry}
-                selectedDate={selectedDate}
-                onDateSelect={d => setSelectedDate(startOfDay(d))}
               />
             </div>
 
             <div className="lg:col-span-1 xl:col-span-1 space-y-8">
+              <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
+                <CardContent className="p-2 sm:p-4 flex justify-center">
+                  <CalendarView
+                      selectedDate={selectedDate}
+                      onDateSelect={d => setSelectedDate(startOfDay(d))}
+                      entries={entries}
+                  />
+                </CardContent>
+              </Card>
               <HabitTracker
                 habits={habits}
                 habitLogs={habitLogs}

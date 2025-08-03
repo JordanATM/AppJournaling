@@ -7,21 +7,17 @@ import type { JournalEntry } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import CalendarView from './CalendarView';
+import { Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PastEntriesProps {
   entries: JournalEntry[];
   onEdit: (entry: JournalEntry) => void;
   onDelete: (entryId: string) => void;
-  selectedDate: Date | null;
-  onDateSelect: (date: Date) => void;
 }
 
 const ENTRIES_PER_PAGE = 5;
 
-export default function PastEntries({ entries, onEdit, onDelete, selectedDate, onDateSelect }: PastEntriesProps) {
+export default function PastEntries({ entries, onEdit, onDelete }: PastEntriesProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(entries.length / ENTRIES_PER_PAGE);
@@ -52,24 +48,6 @@ export default function PastEntries({ entries, onEdit, onDelete, selectedDate, o
         <CardDescription>Una mirada retrospectiva a tu viaje.</CardDescription>
       </CardHeader>
       <CardContent>
-         <Accordion type="single" collapsible className="w-full mb-4">
-          <AccordionItem value="item-1">
-            <AccordionTrigger>
-              <div className="flex items-center gap-2">
-                <CalendarDays className="h-5 w-5 text-primary"/>
-                <span className="text-base font-semibold">Navegador</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="flex justify-center pt-2">
-                <CalendarView
-                    selectedDate={selectedDate}
-                    onDateSelect={onDateSelect}
-                    entries={entries}
-                />
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-
         {entries.length > 0 ? (
           <>
             <ScrollArea className="h-[400px] pr-4">
