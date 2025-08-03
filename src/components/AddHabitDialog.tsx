@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -8,8 +8,6 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
-  DialogClose,
 } from '@/components/ui/dialog';
 import {
   Select,
@@ -25,8 +23,10 @@ import type { Habit } from '@/lib/types';
 import HabitIcon from './HabitIcon';
 
 interface AddHabitDialogProps {
-  children: React.ReactNode;
-  onAddHabit: (habit: Omit<Habit, 'id'>) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (habit: Omit<Habit, 'id'> | Habit) => void;
+  habitToEdit?: Habit | null;
 }
 
 const iconNames = [
@@ -35,29 +35,42 @@ const iconNames = [
   'Footprints', 'Sunrise', 'Bike', 'Dumbbell', 'Apple', 'AlarmClock', 'Anchor'
 ];
 
-export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogProps) {
-  const [open, setOpen] = useState(false);
+export default function AddHabitDialog({ open, onOpenChange, onConfirm, habitToEdit }: AddHabitDialogProps) {
   const [name, setName] = useState('');
   const [icon, setIcon] = useState('Smile');
 
-  const handleAdd = () => {
-    if (name && icon) {
-      onAddHabit({ name, icon });
+  useEffect(() => {
+    if (habitToEdit) {
+      setName(habitToEdit.name);
+      setIcon(habitToEdit.icon);
+    } else {
       setName('');
       setIcon('Smile');
-      setOpen(false);
+    }
+  }, [habitToEdit, open]);
+
+  const handleConfirm = () => {
+    if (name && icon) {
+      if (habitToEdit) {
+        onConfirm({ ...habitToEdit, name, icon });
+      } else {
+        onConfirm({ name, icon });
+      }
+      onOpenChange(false);
     }
   };
 
+  const isEditing = !!habitToEdit;
+  const title = isEditing ? 'Edit Habit' : 'Add a New Habit';
+  const description = isEditing ? 'Update the details for your habit.' : 'Create a new habit to track. Choose a name and an icon.';
+  const buttonText = isEditing ? 'Save Changes' : 'Add Habit';
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add a New Habit</DialogTitle>
-          <DialogDescription>
-            Create a new habit to track. Choose a name and an icon.
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
@@ -79,16 +92,20 @@ export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogP
             <div className="col-span-3">
               <Select value={icon} onValueChange={setIcon}>
                 <SelectTrigger>
-                  <div className="flex items-center gap-2">
-                    <HabitIcon iconName={icon} className="h-5 w-5" />
-                    <SelectValue placeholder="Select an icon" />
-                  </div>
+                  <SelectValue asChild>
+                     <div className="flex items-center gap-2">
+                        <HabitIcon iconName={icon} className="h-5 w-5" />
+                        <span>{icon}</span>
+                      </div>
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <div className="grid grid-cols-5 gap-2 p-2 max-h-60 overflow-y-auto">
                     {iconNames.map((iconName) => (
                       <SelectItem key={iconName} value={iconName} className="flex justify-center items-center p-2">
-                        <HabitIcon iconName={iconName} className="h-5 w-5" />
+                         <div className="flex items-center gap-2">
+                            <HabitIcon iconName={iconName} className="h-5 w-5" />
+                         </div>
                       </SelectItem>
                     ))}
                   </div>
@@ -98,13 +115,11 @@ export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogP
           </div>
         </div>
         <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Cancel
-            </Button>
-          </DialogClose>
-          <Button type="submit" onClick={handleAdd} disabled={!name || !icon}>
-            Add Habit
+          <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button type="submit" onClick={handleConfirm} disabled={!name || !icon}>
+            {buttonText}
           </Button>
         </DialogFooter>
       </DialogContent>

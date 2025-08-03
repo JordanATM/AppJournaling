@@ -81,6 +81,12 @@ export default function Dashboard({ initialEntries, initialHabits, initialLogs }
     });
   }
 
+  const handleEditHabit = (updatedHabit: Habit) => {
+    setHabits(prevHabits =>
+      prevHabits.map(h => (h.id === updatedHabit.id ? updatedHabit : h))
+    );
+  };
+
   const handleDeleteHabit = (habitId: string) => {
     setHabits(prevHabits => prevHabits.filter(h => h.id !== habitId));
     // Also remove from logs
@@ -162,6 +168,7 @@ export default function Dashboard({ initialEntries, initialHabits, initialLogs }
               selectedDate={formattedSelectedDate}
               onToggleHabit={handleToggleHabit}
               onAddHabit={handleAddHabit}
+              onEditHabit={handleEditHabit}
               onDeleteHabit={handleDeleteHabit}
             />
           </div>
