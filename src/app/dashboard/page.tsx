@@ -55,9 +55,6 @@ export default function Dashboard() {
   const [entryToEdit, setEntryToEdit] = useState<JournalEntry | null>(null);
   const [editedContent, setEditedContent] = useState('');
   
-  const [prompt, setPrompt] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   
   const [isPastEntryDialogOpen, setIsPastEntryDialogOpen] = useState(false);
@@ -104,7 +101,6 @@ export default function Dashboard() {
     };
     const savedEntry = await firestore.saveJournalEntry(user.uid, newEntryData);
     setEntries(prevEntries => [...prevEntries, savedEntry]);
-    setPrompt(null);
   };
   
   const handleEditEntry = (entry: JournalEntry) => {
@@ -178,16 +174,6 @@ export default function Dashboard() {
       });
   }, [entries, searchQuery]);
   
-  const handleGetPrompt = () => {
-    startTransition(async () => {
-      const entriesText = entries
-        .map(e => e.content)
-        .join('\n\n---\n\n');
-      
-      const generatedPrompt = await generateJournalPrompt({ previousEntries: entriesText });
-      setPrompt(generatedPrompt);
-    });
-  };
 
   const handleCalendarDateClick = (date: Date) => {
     const dateString = format(date, 'yyyy-MM-dd');
@@ -255,9 +241,6 @@ export default function Dashboard() {
               <JournalEditor
                 selectedDate={today}
                 onSave={handleSaveNewEntry}
-                onGetPrompt={handleGetPrompt}
-                prompt={prompt}
-                isGeneratingPrompt={isPending}
               />
               <PastEntries 
                 entries={sortedEntries} 

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Sparkles, LoaderCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,17 +11,11 @@ import { useToast } from '@/hooks/use-toast';
 interface JournalEditorProps {
   selectedDate: Date;
   onSave: (content: string) => void;
-  onGetPrompt: () => void;
-  prompt: string | null;
-  isGeneratingPrompt: boolean;
 }
 
 export default function JournalEditor({
   selectedDate,
   onSave,
-  onGetPrompt,
-  prompt,
-  isGeneratingPrompt,
 }: JournalEditorProps) {
   const [content, setContent] = useState('');
   const { toast } = useToast();
@@ -51,11 +44,6 @@ export default function JournalEditor({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {prompt && (
-          <div className="p-3 bg-accent/50 border-l-4 border-accent rounded-r-md">
-            <p className="font-semibold text-accent-foreground">{prompt}</p>
-          </div>
-        )}
         <Textarea
           placeholder="¿Qué tienes en mente?"
           value={content}
@@ -65,15 +53,7 @@ export default function JournalEditor({
         />
       </CardContent>
       <CardFooter className="flex justify-end space-x-2">
-        <Button variant="ghost" onClick={onGetPrompt} disabled={isGeneratingPrompt}>
-          {isGeneratingPrompt ? (
-            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Sparkles className="mr-2 h-4 w-4" />
-          )}
-          Obtener Sugerencia
-        </Button>
-        <Button onClick={handleSave} disabled={isGeneratingPrompt || !content.trim()}>Guardar Entrada</Button>
+        <Button onClick={handleSave} disabled={!content.trim()}>Guardar Entrada</Button>
       </CardFooter>
     </Card>
   );
