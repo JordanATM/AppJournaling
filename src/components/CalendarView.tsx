@@ -16,7 +16,10 @@ interface CalendarViewProps {
 }
 
 export default function CalendarView({ selectedDate, onDateSelect, entries, className }: CalendarViewProps) {
-  const entryDates = entries.map(e => new Date(e.date));
+  const entryDates = entries.map(e => {
+    const [year, month, day] = e.date.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  });
 
   return (
     <div className={cn("flex justify-center items-center h-full", className)}>
