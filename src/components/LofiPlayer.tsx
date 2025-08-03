@@ -85,7 +85,7 @@ export default function LofiPlayer() {
              </div>
           </div>
         </Carousel>
-        <audio ref={audioRef} src="https://cdn.pixabay.com/audio/2024/02/09/audio_d52184f647.mp3" loop />
+        <audio ref={audioRef} src="https://cdn.pixabay.com/audio/2022/05/23/audio_4df0344830.mp3" loop />
       </CardContent>
     </Card>
   );
