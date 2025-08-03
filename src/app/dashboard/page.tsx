@@ -34,7 +34,6 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/use-auth';
 import * as firestore from '@/lib/firestore';
-import { DUMMY_ENTRIES, DUMMY_HABITS, DUMMY_LOGS } from '@/lib/data';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -62,22 +61,9 @@ export default function Dashboard() {
         firestore.getHabits(userId),
         firestore.getHabitLogs(userId),
       ]);
-
-      if (userEntries.length === 0 && userHabits.length === 0) {
-        await firestore.seedInitialData(userId, DUMMY_ENTRIES, DUMMY_HABITS, DUMMY_LOGS);
-        const [seededEntries, seededHabits, seededLogs] = await Promise.all([
-          firestore.getJournalEntries(userId),
-          firestore.getHabits(userId),
-          firestore.getHabitLogs(userId),
-        ]);
-        setEntries(seededEntries);
-        setHabits(seededHabits);
-        setHabitLogs(seededLogs);
-      } else {
-        setEntries(userEntries);
-        setHabits(userHabits);
-        setHabitLogs(userHabitLogs);
-      }
+      setEntries(userEntries);
+      setHabits(userHabits);
+      setHabitLogs(userHabitLogs);
     } catch (error) {
       console.error("Error al obtener los datos:", error);
     } finally {
