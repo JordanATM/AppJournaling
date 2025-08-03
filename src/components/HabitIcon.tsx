@@ -11,8 +11,8 @@ interface HabitIconProps {
 const HabitIcon = ({ iconName, className }: HabitIconProps) => {
   const Icon = lucideIcons[iconName as keyof typeof lucideIcons];
 
-  if (!Icon || typeof Icon === 'string') {
-    // Fallback for invalid icon names
+  if (!Icon || typeof Icon === 'string' || typeof Icon !== 'object') {
+    // Fallback for invalid icon names, ensures we don't try to render non-components
     return <lucideIcons.HelpCircle className={className} />;
   }
 

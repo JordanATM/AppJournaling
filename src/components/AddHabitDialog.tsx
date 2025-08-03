@@ -23,13 +23,14 @@ interface AddHabitDialogProps {
   onAddHabit: (habit: Omit<Habit, 'id'>) => void;
 }
 
+// Filter out non-icon exports from lucide-react
 const iconNames = Object.keys(lucideIcons).filter(
   (key) => {
-    if (key === 'createLucideIcon' || key === 'icons' || key === 'LucideIcon') {
-      return false;
+    if (['createLucideIcon', 'icons', 'LucideIcon'].includes(key)) {
+        return false;
     }
     const value = lucideIcons[key as keyof typeof lucideIcons];
-    return typeof value === 'object' && value !== null && 'displayName' in value;
+    return typeof value === 'object' && value !== null && ('displayName' in value || typeof value.render === 'function');
   }
 );
 
