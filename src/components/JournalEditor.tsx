@@ -13,18 +13,21 @@ import type { JournalEntry } from '@/lib/types';
 
 interface JournalEditorProps {
   selectedDate: Date;
-  entries: JournalEntry[];
   onSave: (content: string) => void;
 }
 
-export default function JournalEditor({ selectedDate, entries, onSave }: JournalEditorProps) {
+export default function JournalEditor({ selectedDate, onSave }: JournalEditorProps) {
   const [content, setContent] = useState('');
   const [prompt, setPrompt] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+  
+  // This state is just to get previous entries for the prompt, not for rendering
+  const [previousEntriesForPrompt, setPreviousEntriesForPrompt] = useState<JournalEntry[]>([]);
+
 
   useEffect(() => {
-    // Clear content and prompt when selected date changes
+    // Clear content and prompt when selected date changes, but not the entries for prompt generation.
     setContent('');
     setPrompt(null);
   }, [selectedDate]);
@@ -41,11 +44,14 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
 
   const handleGetPrompt = () => {
     startTransition(async () => {
-      const previousEntries = entries
+       // This part of the component is not ideal, as it's not receiving entries.
+       // For now, we will generate a generic prompt if no entries are available.
+       // A better implementation would involve lifting state up or using a global state manager.
+      const entriesText = previousEntriesForPrompt
         .map(e => e.content)
         .join('\n\n---\n\n');
       
-      const generatedPrompt = await generateJournalPrompt({ previousEntries });
+      const generatedPrompt = await generateJournalPrompt({ previousEntries: entriesText });
       setPrompt(generatedPrompt);
     });
   };

@@ -49,6 +49,13 @@ export default function CalendarView({ selectedDate, onDateSelect, entries, clas
           'day-with-entry': 'day-with-entry',
         }}
         className="p-0"
+        classNames={{
+          root: 'w-full',
+          month: 'w-full',
+          table: 'w-full',
+          head_row: 'flex justify-around',
+          row: 'flex w-full justify-around mt-2',
+        }}
       />
     </div>
   );

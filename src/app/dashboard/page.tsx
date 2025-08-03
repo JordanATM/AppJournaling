@@ -9,6 +9,7 @@ import JournalEditor from '@/components/JournalEditor';
 import PastEntries from '@/components/PastEntries';
 import HabitTracker from '@/components/HabitTracker';
 import CalendarView from '@/components/CalendarView';
+import LofiPlayer from '@/components/LofiPlayer';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -46,11 +47,9 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   
-  // State for delete confirmation dialog
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
 
-  // State for edit dialog
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [entryToEdit, setEntryToEdit] = useState<JournalEntry | null>(null);
   const [editedContent, setEditedContent] = useState('');
@@ -101,11 +100,11 @@ export default function Dashboard() {
     [selectedDate]
   );
 
-  const handleSaveNewEntry = async (content: string, date: string) => {
+  const handleSaveNewEntry = async (content: string) => {
     if (!user) return;
     
     const newEntryData: Omit<JournalEntry, 'id'> = {
-        date,
+        date: formattedSelectedDate,
         content,
         createdAt: new Date().toISOString(),
     };
@@ -174,7 +173,7 @@ export default function Dashboard() {
     setHabits(prevHabits => prevHabits.filter(h => h.id !== habitId));
   };
 
-  const filteredEntries = useMemo(() => {
+  const sortedEntries = useMemo(() => {
     return entries
       .filter(entry => entry.content.toLowerCase().includes(searchQuery.toLowerCase()))
       .sort((a, b) => {
@@ -190,22 +189,27 @@ export default function Dashboard() {
       <div className="flex flex-col h-screen bg-background text-foreground font-body">
         <Header onSearchChange={setSearchQuery} />
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-screen-2xl mx-auto">
-            <div className="lg:col-span-2 xl:col-span-3 space-y-8">
-              <Card>
-                <CardHeader>
-                  <Skeleton className="h-8 w-48" />
-                  <Skeleton className="h-4 w-64" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-72 w-full" />
-                </CardContent>
-              </Card>
-              <PastEntries entries={[]} onEdit={() => {}} onDelete={() => {}} />
-            </div>
-            <div className="lg:col-span-1 xl:col-span-1 space-y-8">
+          <div className="space-y-8 max-w-screen-2xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                <Skeleton className="h-80 w-full" />
-               <Skeleton className="h-96 w-full" />
+               <Skeleton className="h-80 w-full" />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                <Card>
+                  <CardHeader>
+                    <Skeleton className="h-8 w-48" />
+                    <Skeleton className="h-4 w-64" />
+                  </CardHeader>
+                  <CardContent>
+                    <Skeleton className="h-72 w-full" />
+                  </CardContent>
+                </Card>
+                <PastEntries entries={[]} onEdit={() => {}} onDelete={() => {}} />
+              </div>
+              <div className="lg:col-span-1 space-y-8">
+                 <Skeleton className="h-96 w-full" />
+              </div>
             </div>
           </div>
         </main>
@@ -218,45 +222,52 @@ export default function Dashboard() {
       <div className="flex flex-col h-screen bg-background text-foreground font-body">
         <Header onSearchChange={setSearchQuery} />
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-screen-2xl mx-auto">
-            
-            <div className="lg:col-span-2 xl:col-span-3 space-y-8">
-              <JournalEditor
-                selectedDate={selectedDate}
-                onSave={(content) => handleSaveNewEntry(content, formattedSelectedDate)}
-              />
-              <PastEntries 
-                entries={filteredEntries} 
-                onEdit={handleEditEntry} 
-                onDelete={handleDeleteEntry}
-              />
+          <div className="space-y-8 max-w-screen-2xl mx-auto">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+              <Card className="md:col-span-1 lg:col-span-2 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-center">
+                <CalendarView
+                    selectedDate={selectedDate}
+                    onDateSelect={d => setSelectedDate(startOfDay(d))}
+                    entries={entries}
+                />
+              </Card>
+              <div className="md:col-span-1 lg:col-span-3">
+                <LofiPlayer />
+              </div>
+            </div>
+          
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                <JournalEditor
+                  selectedDate={selectedDate}
+                  onSave={handleSaveNewEntry}
+                />
+                <PastEntries 
+                  entries={sortedEntries} 
+                  onEdit={handleEditEntry} 
+                  onDelete={handleDeleteEntry}
+                />
+              </div>
+
+              <div className="lg:col-span-1 space-y-8">
+                <HabitTracker
+                  habits={habits}
+                  habitLogs={habitLogs}
+                  selectedDate={formattedSelectedDate}
+                  onToggleHabit={handleToggleHabit}
+                  onAddHabit={handleAddHabit}
+                  onEditHabit={handleEditHabit}
+                  onDeleteHabit={handleDeleteHabit}
+                />
+              </div>
             </div>
 
-            <div className="lg:col-span-1 xl:col-span-1 space-y-8">
-              <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
-                <CardContent className="p-2 sm:p-4 flex justify-center">
-                  <CalendarView
-                      selectedDate={selectedDate}
-                      onDateSelect={d => setSelectedDate(startOfDay(d))}
-                      entries={entries}
-                  />
-                </CardContent>
-              </Card>
-              <HabitTracker
-                habits={habits}
-                habitLogs={habitLogs}
-                selectedDate={formattedSelectedDate}
-                onToggleHabit={handleToggleHabit}
-                onAddHabit={handleAddHabit}
-                onEditHabit={handleEditHabit}
-                onDeleteHabit={handleDeleteHabit}
-              />
-            </div>
           </div>
         </main>
       </div>
       
-      {/* Delete Confirmation Dialog */}
+      {/* Dialogs */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -272,7 +283,6 @@ export default function Dashboard() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Edit Entry Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
