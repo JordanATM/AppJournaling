@@ -4,31 +4,31 @@
 
 @layer base {
   :root {
-    --background: 90 20% 96%; /* very light green */
-    --foreground: 120 15% 25%; /* dark green-gray */
-    --card: 90 20% 99%; /* almost white with a hint of green */
-    --card-foreground: 120 15% 25%;
-    --popover: 90 20% 99%;
-    --popover-foreground: 120 15% 25%;
-    --primary: 140 30% 55%; /* muted, gentle green */
-    --primary-foreground: 140 30% 98%; /* very light green/white */
-    --secondary: 100 25% 88%; /* soft secondary green */
-    --secondary-foreground: 120 15% 25%;
-    --muted: 90 20% 90%;
-    --muted-foreground: 120 10% 45%;
-    --accent: 140 30% 75%; /* lighter accent green */
-    --accent-foreground: 120 15% 25%;
+    --background: 220 20% 96%; /* very light blue-gray */
+    --foreground: 220 15% 25%; /* dark desaturated blue */
+    --card: 220 20% 99%; /* almost white with a hint of blue */
+    --card-foreground: 220 15% 25%;
+    --popover: 220 20% 99%;
+    --popover-foreground: 220 15% 25%;
+    --primary: 210 30% 55%; /* muted, gentle slate blue */
+    --primary-foreground: 210 30% 98%; /* very light blue/white */
+    --secondary: 220 25% 88%; /* soft secondary blue-gray */
+    --secondary-foreground: 220 15% 25%;
+    --muted: 220 20% 90%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 210 30% 75%; /* lighter accent blue */
+    --accent-foreground: 220 15% 25%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 90 20% 88%;
-    --input: 90 20% 88%;
-    --ring: 140 30% 55%;
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
+    --ring: 210 30% 55%;
     --radius: 0.5rem;
-    --chart-1: 140 30% 55%;
-    --chart-2: 140 30% 75%;
-    --chart-3: 100 25% 78%;
-    --chart-4: 90 20% 80%;
-    --chart-5: 120 10% 65%;
+    --chart-1: 210 30% 55%;
+    --chart-2: 210 30% 75%;
+    --chart-3: 220 25% 78%;
+    --chart-4: 220 20% 80%;
+    --chart-5: 220 10% 65%;
   }
  
   .dark {
