@@ -19,7 +19,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<any>;
   signup: (email: string, password: string, displayName: string) => Promise<any>;
   logout: () => Promise<void>;
-  updateProfile: (updates: { displayName?: string; photoURL?: string }) => Promise<void>;
+  updateProfile: (updates: { displayName?: string; }) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
 }
 
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return sendPasswordResetEmail(auth, email);
   };
 
-  const updateProfile = async (updates: { displayName?: string; photoURL?: string }) => {
+  const updateProfile = async (updates: { displayName?: string }) => {
     if (auth.currentUser) {
       await firebaseUpdateProfile(auth.currentUser, updates);
       // Manually update the user state to reflect changes immediately
