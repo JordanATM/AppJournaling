@@ -1,27 +1,18 @@
 'use client';
 
 import React from 'react';
-import * as lucideIcons from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import HabitIcon from './HabitIcon';
 
-const iconNames = Object.keys(lucideIcons).filter(
-  (key) =>
-    key !== 'createLucideIcon' &&
-    key !== 'icons' &&
-    key !== 'LucideIcon' &&
-    typeof lucideIcons[key as keyof typeof lucideIcons] !== 'string'
-);
-
-
 interface IconPickerProps {
+  iconNames: string[];
   selectedIcon: string;
   onIconSelect: (iconName: string) => void;
 }
 
-export default function IconPicker({ selectedIcon, onIconSelect }: IconPickerProps) {
+export default function IconPicker({ iconNames, selectedIcon, onIconSelect }: IconPickerProps) {
   const [open, setOpen] = React.useState(false);
 
   return (

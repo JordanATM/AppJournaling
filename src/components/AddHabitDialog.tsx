@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import * as lucideIcons from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -21,6 +22,14 @@ interface AddHabitDialogProps {
   children: React.ReactNode;
   onAddHabit: (habit: Omit<Habit, 'id'>) => void;
 }
+
+const iconNames = Object.keys(lucideIcons).filter(
+  (key) =>
+    key !== 'createLucideIcon' &&
+    key !== 'icons' &&
+    key !== 'LucideIcon' &&
+    typeof lucideIcons[key as keyof typeof lucideIcons] !== 'string'
+);
 
 export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogProps) {
   const [open, setOpen] = useState(false);
@@ -64,7 +73,11 @@ export default function AddHabitDialog({ children, onAddHabit }: AddHabitDialogP
               Icon
             </Label>
             <div className="col-span-3">
-              <IconPicker selectedIcon={icon} onIconSelect={setIcon} />
+              <IconPicker 
+                iconNames={iconNames}
+                selectedIcon={icon} 
+                onIconSelect={setIcon} 
+              />
             </div>
           </div>
         </div>
