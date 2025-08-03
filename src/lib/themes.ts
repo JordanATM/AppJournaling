@@ -1,5 +1,7 @@
+export type ThemeName = 'cozy-evening' | 'serene-garden' | 'soft-night-sky';
+
 export type Theme = {
-  name: 'cozy-evening' | 'serene-garden' | 'soft-night-sky';
+  name: ThemeName;
   label: string;
   colors: {
     primary: string;

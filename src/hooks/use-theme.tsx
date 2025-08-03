@@ -1,18 +1,17 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
-
-type Theme = "cozy-evening" | "serene-garden" | "soft-night-sky";
+import type { ThemeName } from '@/lib/themes';
 
 interface ThemeProviderProps {
   children: React.ReactNode;
-  defaultTheme?: Theme;
+  defaultTheme?: ThemeName;
   storageKey?: string;
 }
 
 interface ThemeProviderState {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+  theme: ThemeName;
+  setTheme: (theme: ThemeName) => void;
 }
 
 const initialState: ThemeProviderState = {
@@ -28,18 +27,24 @@ export function ThemeProvider({
   storageKey = 'vite-ui-theme',
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [theme, setTheme] = useState<ThemeName>(defaultTheme);
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem(storageKey) as Theme | null;
-    if (storedTheme) {
-      setTheme(storedTheme);
+    try {
+      const storedTheme = localStorage.getItem(storageKey) as ThemeName | null;
+      if (storedTheme) {
+        setTheme(storedTheme);
+      }
+    } catch (e) {
+      // localStorage is not available
+      console.error('Error reading theme from localStorage', e);
     }
   }, [storageKey]);
 
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove('theme-cozy-evening', 'theme-serene-garden', 'theme-soft-night-sky');
+    
     if (theme) {
       root.classList.add(`theme-${theme}`);
     }
@@ -47,8 +52,12 @@ export function ThemeProvider({
 
   const value = useMemo(() => ({
     theme,
-    setTheme: (newTheme: Theme) => {
-      localStorage.setItem(storageKey, newTheme);
+    setTheme: (newTheme: ThemeName) => {
+      try {
+        localStorage.setItem(storageKey, newTheme);
+      } catch(e) {
+         console.error('Error saving theme to localStorage', e);
+      }
       setTheme(newTheme);
     },
   }), [theme, storageKey]);

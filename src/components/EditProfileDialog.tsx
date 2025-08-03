@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { LoaderCircle, Check } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { themes } from '@/lib/themes';
+import type { ThemeName } from '@/lib/themes';
 import { cn } from '@/lib/utils';
 
 interface EditProfileDialogProps {
@@ -27,10 +28,15 @@ interface EditProfileDialogProps {
 export default function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps) {
   const { user, updateProfile } = useAuth();
   const { toast } = useToast();
-  const { theme: currentTheme, setTheme } = useTheme();
+  const { theme: currentTheme, setTheme: applyTheme } = useTheme();
 
   const [displayName, setDisplayName] = useState(user?.displayName ?? '');
   const [nameLoading, setNameLoading] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState<ThemeName>(currentTheme);
+  
+  useEffect(() => {
+    setSelectedTheme(currentTheme);
+  }, [currentTheme, open]);
 
   const handleNameChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,18 +48,26 @@ export default function EditProfileDialog({ open, onOpenChange }: EditProfileDia
     try {
       await updateProfile({ displayName });
       toast({ title: 'Éxito', description: 'Tu nombre ha sido actualizado.' });
-      // Don't close the dialog on purpose, so user can change theme
     } catch (error: any) {
       toast({ variant: 'destructive', title: 'Error', description: error.message });
     } finally {
       setNameLoading(false);
     }
   };
+  
+  const handleThemeSave = () => {
+    applyTheme(selectedTheme);
+    toast({
+      title: 'Tema Guardado',
+      description: 'Tu nueva paleta de colores ha sido aplicada.',
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => {
       if (!isOpen) {
         setDisplayName(user?.displayName ?? '');
+        setSelectedTheme(currentTheme);
       }
       onOpenChange(isOpen);
     }}>
@@ -61,7 +75,7 @@ export default function EditProfileDialog({ open, onOpenChange }: EditProfileDia
         <DialogHeader>
           <DialogTitle>Editar Perfil</DialogTitle>
           <DialogDescription>
-            Realiza cambios en tu perfil aquí. Haz clic en guardar cuando hayas terminado.
+            Realiza cambios en tu perfil aquí.
           </DialogDescription>
         </DialogHeader>
         
@@ -76,7 +90,7 @@ export default function EditProfileDialog({ open, onOpenChange }: EditProfileDia
                     onChange={(e) => setDisplayName(e.target.value)}
                     disabled={nameLoading}
                   />
-                  <Button type="submit" disabled={nameLoading || !displayName.trim()} className="px-4">
+                  <Button type="submit" disabled={nameLoading || !displayName.trim() || displayName === user?.displayName} className="px-4">
                     {nameLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : 'Guardar'}
                   </Button>
                 </div>
@@ -89,23 +103,26 @@ export default function EditProfileDialog({ open, onOpenChange }: EditProfileDia
                 {themes.map((theme) => (
                   <div key={theme.name}>
                     <button
-                      onClick={() => setTheme(theme.name)}
+                      onClick={() => setSelectedTheme(theme.name)}
                       className={cn(
                         'flex flex-col items-center justify-center rounded-md border-2 p-2 transition-all',
-                        currentTheme === theme.name ? 'border-primary' : 'border-transparent'
+                        selectedTheme === theme.name ? 'border-primary' : 'border-transparent'
                       )}
                     >
                       <div
-                        className="h-10 w-10 rounded-full flex items-center justify-center"
+                        className="h-10 w-10 rounded-full flex items-center justify-center border"
                         style={{ backgroundColor: theme.colors.primary }}
                       >
-                       {currentTheme === theme.name && <Check className="h-6 w-6 text-primary-foreground" />}
+                       {selectedTheme === theme.name && <Check className="h-6 w-6 text-primary-foreground" />}
                       </div>
                       <span className="mt-2 text-xs font-medium text-foreground">{theme.label}</span>
                     </button>
                   </div>
                 ))}
               </div>
+              <Button onClick={handleThemeSave} disabled={selectedTheme === currentTheme} className="w-full">
+                Guardar Tema
+              </Button>
             </div>
         </div>
         
