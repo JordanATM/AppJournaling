@@ -12,13 +12,11 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Volume2, Play, Pause } from 'lucide-react';
 
-const images = [
-  { src: 'https://placehold.co/800x400.png', alt: 'Cozy illustration of a room with a cat on a windowsill', hint: 'cozy windowsill' },
-  { src: 'https://placehold.co/800x400.png', alt: 'Animated image of a person studying at a desk on a rainy night', hint: 'rainy study' },
-  { src: 'https://placehold.co/800x400.png', alt: 'Lofi style art of a quiet coffee shop corner', hint: 'lofi coffeeshop' },
-  { src: 'https://placehold.co/800x400.png', alt: 'Illustration of a serene balcony with plants at sunset', hint: 'sunset balcony' },
-  { src: 'https://placehold.co/800x400.png', alt: 'Cozy pixel art of a fireplace with a sleeping dog', hint: 'pixel fireplace' },
-];
+const images = Array.from({ length: 5 }).map((_, i) => ({
+  src: `https://picsum.photos/800/400?random=${i}`,
+  alt: 'A random cozy lofi-style image',
+  hint: 'cozy lofi'
+}));
 
 export default function LofiPlayer() {
   const [isPlaying, setIsPlaying] = React.useState(false);
