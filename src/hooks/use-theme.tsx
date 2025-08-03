@@ -50,7 +50,11 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   };
 
   if (!isMounted) {
-    return null;
+    return (
+      <body className={defaultTheme.className}>
+        {children}
+      </body>
+    );
   }
 
   return (
