@@ -3,31 +3,135 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 185 23% 55%;
-    --primary-foreground: 185 25% 15%;
-    --secondary: 127 15% 15%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 5% 15%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 127 15% 20%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+  :root, .theme-serene-garden {
+    --background: 60 30% 96%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 60 30% 96%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 60 30% 96%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 125 34% 74%;
+    --primary-foreground: 125 25% 15%;
+    
+    --secondary: 60 30% 90%;
+    --secondary-foreground: 240 5% 45%;
+
+    --muted: 60 30% 90%;
+    --muted-foreground: 60 5% 45%;
+
+    --accent: 185 23% 55%;
+    --accent-foreground: 185 25% 15%;
+
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5% 15%;
-    --input: 240 5% 15%;
-    --ring: 185 23% 55%;
-    --chart-1: 185 23% 55%;
-    --chart-2: 127 25% 45%;
-    --chart-3: 60 50% 40%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+
+    --border: 125 34% 64%;
+    --input: 125 34% 84%;
+    --ring: 125 34% 74%;
+
+    --chart-1: 125 34% 74%;
+    --chart-2: 185 23% 55%;
+    --chart-3: 195 23% 55%;
+    --chart-4: 205 23% 55%;
+    --chart-5: 215 23% 55%;
+  }
+
+  .theme-soft-night {
+    --background: 240 20% 96%;
+    --foreground: 240 10% 10%;
+    
+    --card: 240 20% 96%;
+    --card-foreground: 240 10% 10%;
+    --popover: 240 20% 96%;
+    --popover-foreground: 240 10% 10%;
+
+    --primary: 227 34% 74%;
+    --primary-foreground: 227 25% 15%;
+    
+    --secondary: 240 20% 90%;
+    --secondary-foreground: 240 5% 45%;
+
+    --muted: 240 20% 90%;
+    --muted-foreground: 240 5% 45%;
+
+    --accent: 304 23% 55%;
+    --accent-foreground: 304 25% 15%;
+
+    --border: 227 34% 64%;
+    --input: 227 34% 84%;
+    --ring: 227 34% 74%;
+
+    --chart-1: 227 34% 74%;
+    --chart-2: 304 23% 55%;
+    --chart-3: 294 23% 55%;
+    --chart-4: 284 23% 55%;
+    --chart-5: 274 23% 55%;
+  }
+
+  .theme-desert-warmth {
+    --background: 27 50% 95%;
+    --foreground: 27 20% 15%;
+    
+    --card: 27 50% 95%;
+    --card-foreground: 27 20% 15%;
+    --popover: 27 50% 95%;
+    --popover-foreground: 27 20% 15%;
+
+    --primary: 17 38% 74%;
+    --primary-foreground: 17 25% 15%;
+    
+    --secondary: 27 50% 90%;
+    --secondary-foreground: 27 5% 45%;
+
+    --muted: 27 50% 90%;
+    --muted-foreground: 27 5% 45%;
+
+    --accent: 31 29% 56%;
+    --accent-foreground: 31 25% 15%;
+    
+    --border: 17 38% 64%;
+    --input: 17 38% 84%;
+    --ring: 17 38% 74%;
+
+    --chart-1: 17 38% 74%;
+    --chart-2: 31 29% 56%;
+    --chart-3: 41 29% 56%;
+    --chart-4: 51 29% 56%;
+    --chart-5: 61 29% 56%;
+  }
+
+  .theme-midnight-forest {
+    --background: 212 30% 95%;
+    --foreground: 212 20% 15%;
+    
+    --card: 212 30% 95%;
+    --card-foreground: 212 20% 15%;
+    --popover: 212 30% 95%;
+    --popover-foreground: 212 20% 15%;
+
+    --primary: 200 38% 74%;
+    --primary-foreground: 200 25% 15%;
+    
+    --secondary: 212 30% 90%;
+    --secondary-foreground: 212 5% 45%;
+
+    --muted: 212 30% 90%;
+    --muted-foreground: 212 5% 45%;
+
+    --accent: 212 29% 56%;
+    --accent-foreground: 212 25% 15%;
+    
+    --border: 200 38% 64%;
+    --input: 200 38% 84%;
+    --ring: 200 38% 74%;
+    
+    --chart-1: 200 38% 74%;
+    --chart-2: 212 29% 56%;
+    --chart-3: 222 29% 56%;
+    --chart-4: 232 29% 56%;
+    --chart-5: 242 29% 56%;
   }
 }
  
