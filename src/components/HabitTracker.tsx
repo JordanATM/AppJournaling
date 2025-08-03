@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartConfig, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { addDays, subDays, format, startOfWeek, getWeek } from 'date-fns';
+import { addDays, subDays, format, startOfWeek, getWeek, parse } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Plus, Trash2, Pencil, ChevronLeft, ChevronRight } from 'lucide-react';
 import HabitIcon from './HabitIcon';
@@ -26,11 +26,15 @@ interface HabitTrackerProps {
 export default function HabitTracker({ habits, habitLogs, selectedDate, onToggleHabit, onAddHabit, onEditHabit, onDeleteHabit }: HabitTrackerProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
-  const [displayDate, setDisplayDate] = useState(new Date(selectedDate));
+
+  // Analiza la cadena de fecha 'yyyy-MM-dd' en la zona horaria local.
+  const localSelectedDate = useMemo(() => parse(selectedDate, 'yyyy-MM-dd', new Date()), [selectedDate]);
+  
+  const [displayDate, setDisplayDate] = useState(localSelectedDate);
 
   useEffect(() => {
-    setDisplayDate(new Date(selectedDate));
-  }, [selectedDate]);
+    setDisplayDate(localSelectedDate);
+  }, [localSelectedDate]);
 
   const { chartData, weekNumber } = useMemo(() => {
     const data = [];
@@ -89,7 +93,7 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
       <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">Seguimiento de Hábitos</CardTitle>
-          <CardDescription>Tu progreso para hoy, {format(new Date(selectedDate), "d 'de' MMMM", {locale: es})}</CardDescription>
+          <CardDescription>Tu progreso para hoy, {format(localSelectedDate, "d 'de' MMMM", {locale: es})}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div>
