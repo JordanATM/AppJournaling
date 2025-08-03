@@ -46,8 +46,8 @@ export default function CalendarView({ today, onDateClick, entries, className }:
           color: hsl(var(--foreground));
         }
         .rdp-day_selected, .rdp-day_selected:focus-visible, .rdp-day_selected:hover {
-          background-color: transparent !important;
-          color: hsl(var(--primary)) !important;
+          background-color: hsl(var(--primary)) !important;
+          color: hsl(var(--primary-foreground)) !important;
           font-weight: bold;
           border: 1px solid hsl(var(--primary));
         }
