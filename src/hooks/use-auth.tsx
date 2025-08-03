@@ -8,11 +8,9 @@ import {
   signOut, 
   updateProfile as firebaseUpdateProfile,
   sendPasswordResetEmail,
-  updatePassword,
   User 
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -20,9 +18,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<any>;
   signup: (email: string, password: string, displayName: string) => Promise<any>;
   logout: () => Promise<void>;
-  updateProfile: (updates: { displayName?: string; }) => Promise<void>;
+  updateProfile: (updates: { displayName?: string; photoURL?: string }) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
-  changePassword: (password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,7 +43,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signup = async (email: string, password: string, displayName: string) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     await firebaseUpdateProfile(userCredential.user, { displayName });
-    // Manually update user state as onAuthStateChanged might not be fast enough
     setUser({ ...userCredential.user, displayName });
     return userCredential;
   };
@@ -59,23 +55,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return sendPasswordResetEmail(auth, email);
   };
 
-  const updateProfile = async (updates: { displayName?: string }) => {
+  const updateProfile = async (updates: { displayName?: string; photoURL?: string }) => {
     if (auth.currentUser) {
       await firebaseUpdateProfile(auth.currentUser, updates);
+      // Create a new user object with the updates to trigger a re-render
       setUser(prevUser => prevUser ? { ...prevUser, ...updates } : null);
     } else {
       throw new Error("No hay un usuario actualmente autenticado.");
     }
   };
-
-  const changePassword = async (password: string) => {
-    if (auth.currentUser) {
-      await updatePassword(auth.currentUser, password);
-    } else {
-      throw new Error("No hay un usuario actualmente autenticado.");
-    }
-  };
-
 
   const value = {
     user,
@@ -85,7 +73,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     logout,
     updateProfile,
     resetPassword,
-    changePassword,
   };
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
