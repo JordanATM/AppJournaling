@@ -9,6 +9,8 @@ import {
   writeBatch,
   getDoc,
   runTransaction,
+  addDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import { db } from './firebase';
 import type { JournalEntry, Habit, HabitLog } from './types';
@@ -31,10 +33,18 @@ export async function saveJournalEntry(
   entry: Omit<JournalEntry, 'id'> & { id?: string }
 ): Promise<JournalEntry> {
   const entriesCol = getEntriesCollection(userId);
-  const entryRef = entry.id ? doc(entriesCol, entry.id) : doc(entriesCol);
-  const newEntry = { ...entry, id: entryRef.id };
-  await setDoc(entryRef, newEntry, { merge: true });
-  return newEntry;
+  
+  if (entry.id) {
+    // Editing an existing entry
+    const entryRef = doc(entriesCol, entry.id);
+    await updateDoc(entryRef, entry);
+    return entry as JournalEntry;
+  } else {
+    // Creating a new entry
+    const { id, ...newEntryData } = entry;
+    const entryRef = await addDoc(entriesCol, newEntryData);
+    return { id: entryRef.id, ...newEntryData } as JournalEntry;
+  }
 }
 
 export async function deleteJournalEntry(userId: string, entryId: string): Promise<void> {

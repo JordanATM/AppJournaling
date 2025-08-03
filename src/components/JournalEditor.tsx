@@ -24,26 +24,24 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
   const { toast } = useToast();
 
   useEffect(() => {
-    const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-    const entryForDay = entries.find(e => e.date === formattedDate);
-    setContent(entryForDay?.content || '');
+    // Clear content and prompt when selected date changes
+    setContent('');
     setPrompt(null);
-  }, [selectedDate, entries]);
+  }, [selectedDate]);
 
   const handleSave = () => {
     onSave(content);
-    setContent(''); // Limpiar el contenido después de guardar
-    setPrompt(null); // Limpiar el prompt después de guardar
+    setContent('');
+    setPrompt(null);
     toast({
       title: "Entrada Guardada",
-      description: `Tu entrada del diario para el ${format(selectedDate, 'd \'de\' MMMM \'de\' yyyy', { locale: es })} ha sido guardada.`,
+      description: `Tu nueva entrada para el ${format(selectedDate, 'd \'de\' MMMM \'de\' yyyy', { locale: es })} ha sido guardada.`,
     });
   };
 
   const handleGetPrompt = () => {
     startTransition(async () => {
       const previousEntries = entries
-        .filter(e => e.date !== format(selectedDate, 'yyyy-MM-dd'))
         .map(e => e.content)
         .join('\n\n---\n\n');
       
@@ -56,7 +54,7 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
       <CardHeader>
         <CardTitle className="font-headline text-3xl">
-          {entries.find(e => e.date === format(selectedDate, 'yyyy-MM-dd')) ? 'Editando Entrada' : 'Diario'}
+          Nueva Reflexión
         </CardTitle>
         <CardDescription>
           Tu espacio para la reflexión para el {format(selectedDate, 'd \'de\' MMMM \'de\' yyyy', { locale: es })}

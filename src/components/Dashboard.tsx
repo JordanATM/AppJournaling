@@ -21,10 +21,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/use-auth';
 import * as firestore from '@/lib/firestore';
 import { DUMMY_ENTRIES, DUMMY_HABITS, DUMMY_LOGS } from '@/lib/data';
-
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -36,8 +45,15 @@ export default function Dashboard() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  
+  // State for delete confirmation dialog
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
+
+  // State for edit dialog
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [entryToEdit, setEntryToEdit] = useState<JournalEntry | null>(null);
+  const [editedContent, setEditedContent] = useState('');
 
   const fetchData = useCallback(async (userId: string) => {
     setLoading(true);
@@ -48,13 +64,12 @@ export default function Dashboard() {
         firestore.getHabitLogs(userId),
       ]);
 
-      // Check if user has data, if not, seed with dummy data
       if (userEntries.length === 0 && userHabits.length === 0) {
         await firestore.seedInitialData(userId, DUMMY_ENTRIES, DUMMY_HABITS, DUMMY_LOGS);
         const [seededEntries, seededHabits, seededLogs] = await Promise.all([
-            firestore.getJournalEntries(userId),
-            firestore.getHabits(userId),
-            firestore.getHabitLogs(userId),
+          firestore.getJournalEntries(userId),
+          firestore.getHabits(userId),
+          firestore.getHabitLogs(userId),
         ]);
         setEntries(seededEntries);
         setHabits(seededHabits);
@@ -86,35 +101,36 @@ export default function Dashboard() {
     [selectedDate]
   );
 
-  const handleSaveEntry = async (content: string, date: string) => {
+  const handleSaveNewEntry = async (content: string, date: string) => {
     if (!user) return;
     
-    const existingEntry = entries.find(e => e.date === date);
-    const entryData: Omit<JournalEntry, 'id'> & { id?: string } = {
+    const newEntryData: Omit<JournalEntry, 'id'> = {
         date,
         content,
     };
-    if (existingEntry) {
-        entryData.id = existingEntry.id;
-    }
-
-    const savedEntry = await firestore.saveJournalEntry(user.uid, entryData);
-
-    setEntries(prevEntries => {
-      const existingEntryIndex = prevEntries.findIndex(e => e.id === savedEntry.id);
-      if (existingEntryIndex > -1) {
-        const updatedEntries = [...prevEntries];
-        updatedEntries[existingEntryIndex] = savedEntry;
-        return updatedEntries;
-      } else {
-        return [...prevEntries, savedEntry];
-      }
-    });
+    const savedEntry = await firestore.saveJournalEntry(user.uid, newEntryData);
+    setEntries(prevEntries => [...prevEntries, savedEntry]);
   };
   
   const handleEditEntry = (entry: JournalEntry) => {
-    setSelectedDate(parseISO(entry.date));
+    setEntryToEdit(entry);
+    setEditedContent(entry.content);
+    setIsEditDialogOpen(true);
   };
+
+  const handleSaveEditedEntry = async () => {
+    if (!user || !entryToEdit) return;
+
+    const updatedEntry: JournalEntry = { ...entryToEdit, content: editedContent };
+    
+    const savedEntry = await firestore.saveJournalEntry(user.uid, updatedEntry);
+    
+    setEntries(prevEntries => 
+      prevEntries.map(e => e.id === savedEntry.id ? savedEntry : e)
+    );
+    setIsEditDialogOpen(false);
+    setEntryToEdit(null);
+  }
   
   const handleDeleteEntry = (entryId: string) => {
     setEntryToDelete(entryId);
@@ -155,8 +171,6 @@ export default function Dashboard() {
     if (!user) return;
     await firestore.deleteHabit(user.uid, habitId);
     setHabits(prevHabits => prevHabits.filter(h => h.id !== habitId));
-    // Firestore triggers would be a better way to handle this, but for now we'll clean up logs on client
-    // This part is complex to handle efficiently on client, Firestore rules/functions are better
   };
 
   const filteredEntries = useMemo(() => {
@@ -164,6 +178,10 @@ export default function Dashboard() {
       entry.content.toLowerCase().includes(searchQuery.toLowerCase())
     ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [entries, searchQuery]);
+
+  const entriesForSelectedDate = useMemo(() => {
+    return entries.filter(e => e.date === formattedSelectedDate);
+  }, [entries, formattedSelectedDate]);
 
   if (loading || !selectedDate) {
     return (
@@ -202,10 +220,9 @@ export default function Dashboard() {
             
             <div className="lg:col-span-2 xl:col-span-3 space-y-8">
               <JournalEditor
-                key={formattedSelectedDate}
                 selectedDate={selectedDate}
                 entries={entries}
-                onSave={(content) => handleSaveEntry(content, formattedSelectedDate)}
+                onSave={(content) => handleSaveNewEntry(content, formattedSelectedDate)}
               />
               <PastEntries 
                 entries={filteredEntries} 
@@ -233,6 +250,8 @@ export default function Dashboard() {
           </div>
         </main>
       </div>
+      
+      {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -247,6 +266,29 @@ export default function Dashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Edit Entry Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Entrada</DialogTitle>
+            <DialogDescription>
+              Realiza los cambios en tu reflexión. La fecha no se puede cambiar.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Textarea
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+              className="min-h-[200px]"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleSaveEditedEntry}>Guardar Cambios</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
