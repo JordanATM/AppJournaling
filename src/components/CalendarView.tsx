@@ -6,6 +6,7 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import type { JournalEntry } from '@/lib/types';
 import { es } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 interface CalendarViewProps {
   selectedDate: Date | null;
