@@ -16,21 +16,22 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Wind } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { user, signup, login } = useAuth();
+  const { user, signup, login, loading: authLoading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (user) {
+    if (!authLoading && user) {
       router.push('/dashboard');
     }
-  }, [user, router]);
+  }, [user, authLoading, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,12 +41,13 @@ export default function LoginPage() {
         await signup(email, password);
         toast({
             title: "¡Bienvenido!",
-            description: "Tu cuenta ha sido creada exitosamente.",
-        })
+            description: "Tu cuenta ha sido creada exitosamente. Redirigiendo...",
+        });
+        // No redirigir aquí, el useEffect se encargará
       } else {
         await login(email, password);
+        // No redirigir aquí, el useEffect se encargará
       }
-      router.push('/dashboard');
     } catch (error: any) {
         toast({
             variant: "destructive",
@@ -58,8 +60,23 @@ export default function LoginPage() {
     }
   };
   
-  if (user === undefined) {
-      return null;
+  if (authLoading) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-background">
+          <div className="space-y-4">
+            <Skeleton className="h-12 w-48" />
+            <Skeleton className="h-8 w-64" />
+            <div className="flex justify-center pt-4">
+              <Skeleton className="h-10 w-24" />
+            </div>
+          </div>
+        </div>
+      );
+  }
+  
+  // No mostrar el formulario si el usuario ya está logueado y a punto de ser redirigido
+  if (user) {
+    return null;
   }
 
   return (
@@ -110,6 +127,7 @@ export default function LoginPage() {
                 variant="link"
                 onClick={() => setIsSignUp(!isSignUp)}
                 className="text-sm"
+                disabled={loading}
             >
                 {isSignUp
                 ? '¿Ya tienes una cuenta? Inicia sesión'
