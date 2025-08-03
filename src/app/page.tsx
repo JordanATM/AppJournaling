@@ -1,11 +1,33 @@
-import Dashboard from '@/components/Dashboard';
-import { DUMMY_ENTRIES, DUMMY_HABITS, DUMMY_LOGS } from '@/lib/data';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
-  // In a real app, this data would be fetched from a database.
-  const entries = DUMMY_ENTRIES;
-  const habits = DUMMY_HABITS;
-  const logs = DUMMY_LOGS;
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
-  return <Dashboard initialEntries={entries} initialHabits={habits} initialLogs={logs} />;
+  useEffect(() => {
+    if (!loading) {
+      if (user) {
+        router.push('/dashboard');
+      } else {
+        router.push('/login');
+      }
+    }
+  }, [user, loading, router]);
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+      <div className="space-y-4">
+        <Skeleton className="h-12 w-48" />
+        <Skeleton className="h-8 w-64" />
+        <div className="flex justify-center pt-4">
+          <Skeleton className="h-10 w-24" />
+        </div>
+      </div>
+    </div>
+  );
 }
