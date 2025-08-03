@@ -2,11 +2,11 @@ import type { JournalEntry, Habit, HabitLog } from '@/lib/types';
 import { subDays, format } from 'date-fns';
 
 export const DUMMY_HABITS: Habit[] = [
-  { id: 'h1', name: 'Read for 15 minutes', icon: 'BookText' },
-  { id: 'h2', name: 'Mindful moment', icon: 'Leaf' },
-  { id: 'h3', name: 'Drink 8 glasses of water', icon: 'Droplets' },
-  { id: 'h4', name: 'Go for a walk', icon: 'Footprints' },
-  { id: 'h5', name: 'Morning stretch', icon: 'Sunrise' },
+  { id: 'h1', name: 'Leer durante 15 minutos', icon: 'BookText' },
+  { id: 'h2', name: 'Momento de atención plena', icon: 'Leaf' },
+  { id: 'h3', name: 'Beber 8 vasos de agua', icon: 'Droplets' },
+  { id: 'h4', name: 'Salir a caminar', icon: 'Footprints' },
+  { id: 'h5', name: 'Estiramiento matutino', icon: 'Sunrise' },
 ];
 
 const today = new Date();
@@ -16,22 +16,22 @@ export const DUMMY_ENTRIES: JournalEntry[] = [
   {
     id: 'e1',
     date: formatDate(today),
-    content: "Today was a peaceful day. I spent some time in the garden, feeling the sun on my face. It's the small moments that bring the most joy. I also managed to finish a chapter of my book, which felt like a good accomplishment."
+    content: "Hoy fue un día tranquilo. Pasé un tiempo en el jardín, sintiendo el sol en mi cara. Son los pequeños momentos los que traen la mayor alegría. También logré terminar un capítulo de mi libro, lo que se sintió como un buen logro."
   },
   {
     id: 'e2',
     date: formatDate(subDays(today, 1)),
-    content: "Felt a bit restless yesterday. The weather was gloomy, which might have contributed. I tried a new recipe for dinner, and it turned out surprisingly well. Cooking helps to ground me when my thoughts are scattered."
+    content: "Ayer me sentí un poco inquieto. El clima estaba sombrío, lo que podría haber contribuido. Probé una nueva receta para la cena y salió sorprendentemente bien. Cocinar me ayuda a centrarme cuando mis pensamientos están dispersos."
   },
   {
     id: 'e3',
     date: formatDate(subDays(today, 3)),
-    content: "A productive day at work. I had a breakthrough on a project that's been bugging me for a while. It's a reminder that persistence pays off. In the evening, I went for a long walk to clear my head."
+    content: "Un día productivo en el trabajo. Tuve un avance en un proyecto que me ha estado molestando por un tiempo. Es un recordatorio de que la persistencia vale la pena. Por la noche, salí a dar un largo paseo para despejar mi mente."
   },
     {
     id: 'e4',
     date: formatDate(subDays(today, 5)),
-    content: "Had a wonderful chat with an old friend. It's amazing how some connections feel timeless. We reminisced about our college days and laughed until our sides hurt. It was a much-needed dose of nostalgia and warmth."
+    content: "Tuve una charla maravillosa con un viejo amigo. Es increíble cómo algunas conexiones se sienten atemporales. Recordamos nuestros días de universidad y nos reímos hasta que nos dolieron los costados. Fue una dosis muy necesaria de nostalgia y calidez."
   },
 ];
 

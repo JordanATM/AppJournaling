@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import type { JournalEntry } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 interface CalendarViewProps {
   selectedDate: Date | null;
@@ -20,8 +21,8 @@ export default function CalendarView({ selectedDate, onDateSelect, entries }: Ca
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Navigator</CardTitle>
-        <CardDescription>Select a day to view</CardDescription>
+        <CardTitle className="font-headline text-2xl">Navegador</CardTitle>
+        <CardDescription>Selecciona un día para ver</CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center">
         <style>{`
@@ -42,6 +43,7 @@ export default function CalendarView({ selectedDate, onDateSelect, entries }: Ca
           }
         `}</style>
         <DayPicker
+          locale={es}
           mode="single"
           selected={selectedDate || undefined}
           onSelect={(date) => date && onDateSelect(date)}

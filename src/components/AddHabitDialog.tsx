@@ -61,9 +61,9 @@ export default function AddHabitDialog({ open, onOpenChange, onConfirm, habitToE
   };
 
   const isEditing = !!habitToEdit;
-  const title = isEditing ? 'Edit Habit' : 'Add a New Habit';
-  const description = isEditing ? 'Update the details for your habit.' : 'Create a new habit to track. Choose a name and an icon.';
-  const buttonText = isEditing ? 'Save Changes' : 'Add Habit';
+  const title = isEditing ? 'Editar Hábito' : 'Añadir un Nuevo Hábito';
+  const description = isEditing ? 'Actualiza los detalles de tu hábito.' : 'Crea un nuevo hábito para seguir. Elige un nombre y un icono.';
+  const buttonText = isEditing ? 'Guardar Cambios' : 'Añadir Hábito';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -75,19 +75,19 @@ export default function AddHabitDialog({ open, onOpenChange, onConfirm, habitToE
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
-              Name
+              Nombre
             </Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="col-span-3"
-              placeholder="e.g., Meditate for 10 minutes"
+              placeholder="Ej: Meditar por 10 minutos"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="icon" className="text-right">
-              Icon
+              Icono
             </Label>
             <div className="col-span-3">
               <Select value={icon} onValueChange={setIcon}>
@@ -116,7 +116,7 @@ export default function AddHabitDialog({ open, onOpenChange, onConfirm, habitToE
         </div>
         <DialogFooter>
           <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
-            Cancel
+            Cancelar
           </Button>
           <Button type="submit" onClick={handleConfirm} disabled={!name || !icon}>
             {buttonText}

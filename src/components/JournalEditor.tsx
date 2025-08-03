@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useTransition } from 'react';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { Sparkles, LoaderCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,8 +33,8 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
   const handleSave = () => {
     onSave(content);
     toast({
-      title: "Entry Saved",
-      description: `Your journal entry for ${format(selectedDate, 'MMMM d, yyyy')} has been saved.`,
+      title: "Entrada Guardada",
+      description: `Tu entrada del diario para el ${format(selectedDate, 'd \'de\' MMMM \'de\' yyyy', { locale: es })} ha sido guardada.`,
     });
   };
 
@@ -52,9 +53,9 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
       <CardHeader>
-        <CardTitle className="font-headline text-3xl">Journal</CardTitle>
+        <CardTitle className="font-headline text-3xl">Diario</CardTitle>
         <CardDescription>
-          Your space for reflection for {format(selectedDate, 'MMMM d, yyyy')}
+          Tu espacio para la reflexión para el {format(selectedDate, 'd \'de\' MMMM \'de\' yyyy', { locale: es })}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -64,11 +65,11 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
           </div>
         )}
         <Textarea
-          placeholder="What's on your mind?"
+          placeholder="¿Qué tienes en mente?"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           className="min-h-[300px] text-base leading-relaxed bg-background"
-          aria-label="Journal entry text area"
+          aria-label="Área de texto para la entrada del diario"
         />
       </CardContent>
       <CardFooter className="flex justify-end space-x-2">
@@ -78,9 +79,9 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
           ) : (
             <Sparkles className="mr-2 h-4 w-4" />
           )}
-          Get a Prompt
+          Obtener Sugerencia
         </Button>
-        <Button onClick={handleSave} disabled={isPending}>Save Entry</Button>
+        <Button onClick={handleSave} disabled={isPending}>Guardar Entrada</Button>
       </CardFooter>
     </Card>
   );

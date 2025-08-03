@@ -10,7 +10,7 @@ export async function generateJournalPrompt(
     const result = await generateJournalPromptFlow(input);
     return result.prompt;
   } catch (error) {
-    console.error('Error generating journal prompt:', error);
-    return "Sorry, I couldn't generate a prompt right now. How about writing about your favorite memory?";
+    console.error('Error generando la sugerencia de diario:', error);
+    return "Lo siento, no pude generar una sugerencia en este momento. ¿Qué tal si escribes sobre tu recuerdo favorito?";
   }
 }

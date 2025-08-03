@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { format, startOfDay } from 'date-fns';
+import { es } from 'date-fns/locale';
 import type { JournalEntry, Habit, HabitLog } from '@/lib/types';
 import Header from '@/components/Header';
 import JournalEditor from '@/components/JournalEditor';

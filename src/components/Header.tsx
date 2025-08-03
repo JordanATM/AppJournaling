@@ -16,17 +16,17 @@ export default function Header({ onSearchChange }: HeaderProps) {
           <div className="flex items-center space-x-3">
             <Wind className="h-7 w-7 text-primary" />
             <h1 className="text-2xl font-bold text-foreground font-headline tracking-tight">
-              Serene Stream
+              Corriente Serena
             </h1>
           </div>
           <div className="relative w-full max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search entries..."
+              placeholder="Buscar entradas..."
               className="pl-10 h-9"
               onChange={(e) => onSearchChange(e.target.value)}
-              aria-label="Search journal entries"
+              aria-label="Buscar en las entradas del diario"
             />
           </div>
         </div>
