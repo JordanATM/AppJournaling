@@ -21,10 +21,16 @@ const images = Array.from({ length: 5 }).map((_, i) => ({
 export default function LofiPlayer() {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
+  const [isReadyToPlay, setIsReadyToPlay] = React.useState(false);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
     if (audio) {
+      if (!isReadyToPlay) {
+        audio.load();
+        setIsReadyToPlay(true);
+      }
+      
       if (isPlaying) {
         audio.pause();
       } else {
@@ -85,7 +91,9 @@ export default function LofiPlayer() {
              </div>
           </div>
         </Carousel>
-        <audio ref={audioRef} src="https://cdn.pixabay.com/audio/2022/05/23/audio_4df0344830.mp3" loop />
+        <audio ref={audioRef} loop>
+           <source src="https://cdn.pixabay.com/audio/2022/02/16/audio_2ba7a8a86a.mp3" type="audio/mpeg" />
+        </audio>
       </CardContent>
     </Card>
   );
