@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartConfig, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { subDays, format } from 'date-fns';
+import { addDays, format, startOfWeek } from 'date-fns';
 import { Plus, Trash2, Pencil } from 'lucide-react';
 import HabitIcon from './HabitIcon';
 import AddHabitDialog from './AddHabitDialog';
@@ -29,8 +29,10 @@ export default function HabitTracker({ habits, habitLogs, selectedDate, onToggle
   const chartData = useMemo(() => {
     const data = [];
     const today = selectedDate ? new Date(selectedDate) : new Date();
-    for (let i = 6; i >= 0; i--) {
-      const date = subDays(today, i);
+    // Use startOfWeek to get the beginning of the week (Sunday by default)
+    const start = startOfWeek(today); 
+    for (let i = 0; i < 7; i++) {
+      const date = addDays(start, i);
       const dateString = format(date, 'yyyy-MM-dd');
       const dayLog = habitLogs[dateString];
       data.push({
