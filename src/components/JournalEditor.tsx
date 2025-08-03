@@ -53,7 +53,9 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
       <CardHeader>
-        <CardTitle className="font-headline text-3xl">Diario</CardTitle>
+        <CardTitle className="font-headline text-3xl">
+          {entries.find(e => e.date === format(selectedDate, 'yyyy-MM-dd')) ? 'Editando Entrada' : 'Diario'}
+        </CardTitle>
         <CardDescription>
           Tu espacio para la reflexión para el {format(selectedDate, 'd \'de\' MMMM \'de\' yyyy', { locale: es })}
         </CardDescription>
@@ -81,7 +83,7 @@ export default function JournalEditor({ selectedDate, entries, onSave }: Journal
           )}
           Obtener Sugerencia
         </Button>
-        <Button onClick={handleSave} disabled={isPending}>Guardar Entrada</Button>
+        <Button onClick={handleSave} disabled={isPending || !content.trim()}>Guardar Entrada</Button>
       </CardFooter>
     </Card>
   );

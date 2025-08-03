@@ -3,9 +3,9 @@
 import React from 'react';
 import { Wind, Search, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
+import UserMenu from './UserMenu';
 
 
 interface HeaderProps {
@@ -46,9 +46,7 @@ export default function Header({ onSearchChange }: HeaderProps) {
                 aria-label="Buscar en las entradas del diario"
               />
             </div>
-            <Button variant="ghost" size="icon" onClick={handleLogout} aria-label="Cerrar sesión">
-                <LogOut className="h-5 w-5" />
-            </Button>
+            <UserMenu onLogout={handleLogout} />
           </div>
         </div>
       </div>

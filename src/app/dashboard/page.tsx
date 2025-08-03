@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import Dashboard from '@/components/Dashboard';
@@ -28,8 +28,9 @@ export default function DashboardPage() {
                         <Skeleton className="h-7 w-7" />
                         <Skeleton className="h-7 w-48" />
                     </div>
-                    <div className="relative w-full max-w-xs">
-                        <Skeleton className="h-9 w-full" />
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-9 w-40" />
+                      <Skeleton className="h-8 w-8 rounded-full" />
                     </div>
                 </div>
             </div>
