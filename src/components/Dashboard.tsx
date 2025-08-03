@@ -20,11 +20,12 @@ export default function Dashboard({ initialEntries, initialHabits, initialLogs }
   const [habits, setHabits] = useState<Habit[]>(initialHabits);
   const [habitLogs, setHabitLogs] = useState<HabitLog>(initialLogs);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedDate, setSelectedDate] = useState<Date>(startOfDay(new Date()));
+  const [selectedDate, setSelectedDate] = useState<Date>(() => startOfDay(new Date()));
 
-  // Ensure selectedDate is always at the start of the day to avoid timezone issues
+  // This effect runs once on the client after initial hydration
+  // to prevent server/client mismatch for the date.
   useEffect(() => {
-    setSelectedDate(prevDate => startOfDay(prevDate));
+    setSelectedDate(startOfDay(new Date()));
   }, []);
 
   const formattedSelectedDate = useMemo(() => format(selectedDate, 'yyyy-MM-dd'), [selectedDate]);
