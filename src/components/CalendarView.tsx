@@ -7,7 +7,7 @@ import 'react-day-picker/dist/style.css';
 import type { JournalEntry } from '@/lib/types';
 import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { startOfDay } from 'date-fns';
+import { parse } from 'date-fns';
 
 interface CalendarViewProps {
   today: Date;
@@ -18,7 +18,9 @@ interface CalendarViewProps {
 
 export default function CalendarView({ today, onDateClick, entries, className }: CalendarViewProps) {
   const entryDates = entries.map(e => {
-    return startOfDay(new Date(e.date));
+    // Analiza la cadena de fecha 'yyyy-MM-dd' en la zona horaria local.
+    // Esto evita problemas de desplazamiento de zona horaria que ocurren con new Date().
+    return parse(e.date, 'yyyy-MM-dd', new Date());
   });
 
   return (
