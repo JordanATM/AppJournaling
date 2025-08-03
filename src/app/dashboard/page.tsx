@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import Dashboard from '@/components/Dashboard';
-import { DUMMY_ENTRIES, DUMMY_HABITS, DUMMY_LOGS } from '@/lib/data';
 import { Skeleton } from '@/components/ui/skeleton';
 
 
@@ -50,11 +49,6 @@ export default function DashboardPage() {
       </div>
     );
   }
-  
-  // In a real app, this data would be fetched from a database for the logged-in user.
-  const entries = DUMMY_ENTRIES;
-  const habits = DUMMY_HABITS;
-  const logs = DUMMY_LOGS;
 
-  return <Dashboard initialEntries={entries} initialHabits={habits} initialLogs={logs} />;
+  return <Dashboard />;
 }

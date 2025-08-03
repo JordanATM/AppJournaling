@@ -21,17 +21,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { DUMMY_ENTRIES, DUMMY_HABITS, DUMMY_LOGS } from '@/lib/data';
 
-interface DashboardProps {
-  initialEntries: JournalEntry[];
-  initialHabits: Habit[];
-  initialLogs: HabitLog;
-}
 
-export default function Dashboard({ initialEntries, initialHabits, initialLogs }: DashboardProps) {
-  const [entries, setEntries] = useState<JournalEntry[]>(initialEntries);
-  const [habits, setHabits] = useState<Habit[]>(initialHabits);
-  const [habitLogs, setHabitLogs] = useState<HabitLog>(initialLogs);
+export default function Dashboard() {
+  const [entries, setEntries] = useState<JournalEntry[]>(DUMMY_ENTRIES);
+  const [habits, setHabits] = useState<Habit[]>(DUMMY_HABITS);
+  const [habitLogs, setHabitLogs] = useState<HabitLog>(DUMMY_LOGS);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
