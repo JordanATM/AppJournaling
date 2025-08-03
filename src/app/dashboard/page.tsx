@@ -35,6 +35,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/use-auth';
 import * as firestore from '@/lib/firestore';
 import { generateJournalPrompt } from '@/app/actions';
+import EditProfileDialog from '@/components/EditProfileDialog';
 
 
 export default function Dashboard() {
@@ -57,6 +58,9 @@ export default function Dashboard() {
   
   const [prompt, setPrompt] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+
 
   const fetchData = useCallback(async (userId: string) => {
     setLoading(true);
@@ -196,7 +200,7 @@ export default function Dashboard() {
   if (loading || !selectedDate) {
     return (
       <div className="flex flex-col h-screen bg-background text-foreground font-body">
-        <Header onSearchChange={setSearchQuery} />
+        <Header onSearchChange={setSearchQuery} onEditProfile={() => {}}/>
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
           <div className="space-y-8 max-w-screen-2xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -229,7 +233,7 @@ export default function Dashboard() {
   return (
     <>
       <div className="flex flex-col h-screen bg-background text-foreground font-body">
-        <Header onSearchChange={setSearchQuery} />
+        <Header onSearchChange={setSearchQuery} onEditProfile={() => setIsEditProfileOpen(true)} />
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
           <div className="space-y-8 max-w-screen-2xl mx-auto">
 
@@ -314,6 +318,8 @@ export default function Dashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <EditProfileDialog open={isEditProfileOpen} onOpenChange={setIsEditProfileOpen} />
     </>
   );
 }

@@ -16,9 +16,10 @@ import { LogOut, User } from 'lucide-react';
 
 interface UserMenuProps {
   onLogout: () => void;
+  onEditProfile: () => void;
 }
 
-export default function UserMenu({ onLogout }: UserMenuProps) {
+export default function UserMenu({ onLogout, onEditProfile }: UserMenuProps) {
   const { user } = useAuth();
 
   const getInitials = (name?: string | null) => {
@@ -60,7 +61,7 @@ export default function UserMenu({ onLogout }: UserMenuProps) {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem disabled>
+          <DropdownMenuItem onClick={onEditProfile}>
             <User className="mr-2 h-4 w-4" />
             <span>Editar Perfil</span>
           </DropdownMenuItem>

@@ -10,9 +10,10 @@ import UserMenu from './UserMenu';
 
 interface HeaderProps {
   onSearchChange: (query: string) => void;
+  onEditProfile: () => void;
 }
 
-export default function Header({ onSearchChange }: HeaderProps) {
+export default function Header({ onSearchChange, onEditProfile }: HeaderProps) {
   const { logout } = useAuth();
   const router = useRouter();
 
@@ -46,7 +47,7 @@ export default function Header({ onSearchChange }: HeaderProps) {
                 aria-label="Buscar en las entradas del diario"
               />
             </div>
-            <UserMenu onLogout={handleLogout} />
+            <UserMenu onLogout={handleLogout} onEditProfile={onEditProfile}/>
           </div>
         </div>
       </div>

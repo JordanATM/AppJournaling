@@ -8,6 +8,7 @@ import {
   signOut, 
   updateProfile as firebaseUpdateProfile,
   sendPasswordResetEmail,
+  updatePassword,
   User 
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -21,6 +22,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateProfile: (updates: { displayName?: string; }) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  changePassword: (password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -60,8 +62,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateProfile = async (updates: { displayName?: string }) => {
     if (auth.currentUser) {
       await firebaseUpdateProfile(auth.currentUser, updates);
-      // Manually update the user state to reflect changes immediately
       setUser(prevUser => prevUser ? { ...prevUser, ...updates } : null);
+    } else {
+      throw new Error("No hay un usuario actualmente autenticado.");
+    }
+  };
+
+  const changePassword = async (password: string) => {
+    if (auth.currentUser) {
+      await updatePassword(auth.currentUser, password);
     } else {
       throw new Error("No hay un usuario actualmente autenticado.");
     }
@@ -76,6 +85,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     logout,
     updateProfile,
     resetPassword,
+    changePassword,
   };
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
