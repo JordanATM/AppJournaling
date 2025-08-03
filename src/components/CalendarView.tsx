@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
 interface CalendarViewProps {
-  selectedDate: Date;
+  selectedDate: Date | null;
   onDateSelect: (date: Date) => void;
   entries: JournalEntry[];
 }
@@ -43,7 +43,7 @@ export default function CalendarView({ selectedDate, onDateSelect, entries }: Ca
         `}</style>
         <DayPicker
           mode="single"
-          selected={selectedDate}
+          selected={selectedDate || undefined}
           onSelect={(date) => date && onDateSelect(date)}
           modifiers={{
             'day-with-entry': entryDates,
